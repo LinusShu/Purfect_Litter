@@ -9,5 +9,23 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Purfect Litter" />
+    
+    <Button
+        android:id="@+id/sendButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Send"
+        android:visibility="gone" >
+
+        </Button>
+        
+    <Button
+        android:id="@+id/broadcastButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Broadcast"
+        android:visibility="gone" >
+
+        </Button>
 
 </LinearLayout>
