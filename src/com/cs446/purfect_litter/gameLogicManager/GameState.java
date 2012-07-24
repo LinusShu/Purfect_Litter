@@ -1,13 +1,15 @@
 package com.cs446.purfect_litter.gameLogicManager;
 
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
 
 
-public class GameState {
+@SuppressWarnings("serial")
+public class GameState implements Serializable{
 
 	public static enum phase {
 	    START, ACTION, CHAMBER, PURCHASE, END, VICTORY
