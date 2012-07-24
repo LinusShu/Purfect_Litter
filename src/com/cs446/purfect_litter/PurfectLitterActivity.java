@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.cs446.purfect_litter.gameLogicManager.cardManager.Card;
+import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CatCardFactory;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.EventCardFactory;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.LoveCardFactory;
@@ -106,9 +106,9 @@ public class PurfectLitterActivity extends Activity {
     	
     	
         //create card definitions using the card factory methods
-        List<Card> LoveCards = new ArrayList<Card>();
-        List<Card> EventCards = new ArrayList<Card>();
-        List<Card> CatCards = new ArrayList<Card>();
+        List<CardDef> LoveCards = new ArrayList<CardDef>();
+        List<CardDef> EventCards = new ArrayList<CardDef>();
+        List<CardDef> CatCards = new ArrayList<CardDef>();
         
         LoveCards = new LoveCardFactory().Cards();
         EventCards = new EventCardFactory().Cards();

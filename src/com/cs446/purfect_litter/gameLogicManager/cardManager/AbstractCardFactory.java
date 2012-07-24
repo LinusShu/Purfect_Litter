@@ -9,13 +9,13 @@ import java.util.List;
  */
 
 public abstract class AbstractCardFactory {
-	private  List<Card> cards = new ArrayList<Card>();
+	private  List<CardDef> cards = new ArrayList<CardDef>();
 	
 	public AbstractCardFactory(){
 		this.CreateCards();
 	}
 	
-	public List<Card> Cards(){
+	public List<CardDef> Cards(){
 		return this.cards;
 	}
 	
