@@ -5,7 +5,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
 
 import android.os.AsyncTask;
 

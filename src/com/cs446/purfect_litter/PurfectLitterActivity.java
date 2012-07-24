@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
+import com.cs446.purfect_litter.gameLogicManager.GameState;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CatCardFactory;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.EventCardFactory;

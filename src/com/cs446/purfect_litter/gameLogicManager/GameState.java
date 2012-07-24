@@ -21,8 +21,9 @@ public class GameState {
 	public int currentAction;
 	public int currentPurchase;
 	public String lastActions;
+	public int id;
 	
-	GameState()
+	public GameState()
 	{
 		townCards = new ArrayList<ArrayList<CardInstance>>();
 		players = new ArrayList<Player>();
@@ -76,5 +77,13 @@ public class GameState {
 		}
 		//THROW ERROR
 		return null;
+	}
+
+	public int getID() {
+		return this.id;
+	}
+
+	public void setID(int id) {
+		this.id = id;
 	}
 }

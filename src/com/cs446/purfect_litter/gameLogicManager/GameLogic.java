@@ -109,7 +109,7 @@ public class GameLogic {
 		table = newGS;
 		
 		//TALK TO VIEW, POST UPDATES
-		view.updatelog(table.lastActions);
+		//view.updatelog(table.lastActions);
 		table.lastActions = "";
 		
 		if (table.gameOver())
