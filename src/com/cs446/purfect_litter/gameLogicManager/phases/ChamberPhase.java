@@ -1,12 +1,13 @@
 package com.cs446.purfect_litter.gameLogicManager.phases;
 
 import com.cs446.purfect_litter.gameLogicManager.GameLogic;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
 import com.cs446.purfect_litter.gameLogicManager.Player;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CatCard;
 
-public class ChamberPhase implements SbstractPhase{
+public class ChamberPhase implements AbstractPhase{
 
 	@Override
 	public boolean pickCard(CardInstance chosen, GameLogic wrapper) {
@@ -28,7 +29,8 @@ public class ChamberPhase implements SbstractPhase{
 
 		wrapper.me.move(chosen, Player.pile.HAND, Player.pile.CHAMBER);
 		wrapper.table.currentAction -= catlook.getChamberCost();
-		wrapper.table.lastActions+= wrapper.me.getName() + " sends " + chosen.getName() + " to his chamber.\n";
+		wrapper.table.lastActions+= wrapper.me.getName() + " sends " + chosen.getDef().getName() + " to his chamber.\n";
+		return true;
 
 	}
 

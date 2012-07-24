@@ -11,10 +11,10 @@ public class CardDef {
 	
 	
 	
-	public CardDef(int cost, String name, ctype t) {
+	public CardDef(int cost, String name, int number) {
 		this.cost = cost;
 		this.name = name;
-		this.t = t;
+		this.number = number;
 	}
 
 	public int getCost() {

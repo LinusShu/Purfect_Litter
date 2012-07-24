@@ -6,8 +6,6 @@ import java.util.Random;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDefLib;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CatCardFactory;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.LoveCardFactory;
 import com.cs446.purfect_litter.gameLogicManager.phases.AbstractPhase;
 import com.cs446.purfect_litter.gameLogicManager.phases.StartingPhase;
 import com.cs446.purfect_litter.gameSessionManager.GameSessionManager;
@@ -19,7 +17,7 @@ public class GameLogic {
 	public GameState table;
 	public Player me;
 	AbstractPhase currentPhase;
-	GameSessionManager comm;
+	public GameSessionManager comm;
 	
 	GameLogic(GameState newGS, String playerName)
 	{
@@ -69,7 +67,7 @@ public class GameLogic {
 				{
 					for (int k=0; k<7;k++)//deal 7 of them
 					{
-						table.players[j].take(new CardInstance(i), Player.pile.DISCARD);
+						table.players.get(j).take(new CardInstance(i), Player.pile.DISCARD);
 						left--;
 					}
 				}
@@ -81,7 +79,7 @@ public class GameLogic {
 				{
 					for (int k=0; k<3;k++)//deal 3 of them
 					{
-						table.players[j].take(new CardInstance(i), Player.pile.DISCARD);
+						table.players.get(j).take(new CardInstance(i), Player.pile.DISCARD);
 						left--;
 					}
 				}

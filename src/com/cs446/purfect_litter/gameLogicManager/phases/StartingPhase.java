@@ -8,6 +8,7 @@ public class StartingPhase implements AbstractPhase {
 
 	@Override
 	public boolean pickCard(CardInstance chosen, GameLogic wrapper) {
+		return false;
 		// Do nothing or raise error
 		
 	}

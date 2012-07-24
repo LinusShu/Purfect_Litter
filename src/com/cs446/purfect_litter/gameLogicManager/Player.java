@@ -1,4 +1,5 @@
 package com.cs446.purfect_litter.gameLogicManager;
+import java.util.ArrayList;
 import java.util.Random;
 
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
@@ -24,7 +25,7 @@ public class Player {
 		piles = new ArrayList<ArrayList<CardInstance>>(5);
 		for (int i=0; i<5; i++)
 		{
-			piles[i]= new ArrayList<CardInstance>();
+			piles.set(i, new ArrayList<CardInstance>());
 		}
 	}
 	
@@ -35,12 +36,12 @@ public class Player {
 	
 	public void take(CardInstance in, pile p)
 	{
-		piles[p.index].add(in);
+		piles.get(p.index).add(in);
 	}
 	
 	public void move(CardInstance in, pile s, pile d)
 	{
-		piles[d.index].add(piles[s.index].remove(piles[s.index].indexOf(in)));
+		piles.get(d.index).add(piles.get(s.index).remove(piles.get(s.index).indexOf(in)));
 		//finds the index in s where in resides, removes it and plops it into d
 	}
 	
@@ -48,30 +49,30 @@ public class Player {
 	{
 		if (s == pile.DECK)//if its moving from the deck, move only one,
 		{
-			if (piles[pile.DECK.index].size() == 0)//if ever deck is empty
+			if (piles.get(pile.DECK.index).size() == 0)//if ever deck is empty
 			{
 				Random r= new Random();
-				for (int i = piles[pile.DISCARD.index].size(); i<0; i--)
+				for (int i = piles.get(pile.DISCARD.index).size(); i<0; i--)
 				{
-					piles[pile.DECK.index].add(piles[pile.DISCARD.index].remove(r.nextInt(i)));
+					piles.get(pile.DECK.index).add(piles.get(pile.DISCARD.index).remove(r.nextInt(i)));
 					//remove a card from discard at random, and plop it into deck
 				}
 			}
-			piles[d.index].add(piles[s.index].remove(0));
+			piles.get(d.index).add(piles.get(s.index).remove(0));
 		}
 		else // if its from anywhere else, move the entire pile
 		{
-			piles[d.index].addAll(piles[s.index]);
-			piles[s.index].clear();
+			piles.get(d.index).addAll(piles.get(s.index));
+			piles.get(s.index).clear();
 		}
 	}
 	
 	public int getLoveInHand()
 	{
 		int rvlove= 0;
-		for (int i=0;i<piles[pile.HAND].size(); i++)
+		for (int i=0;i<piles.get(pile.HAND.index).size(); i++)
 		{
-			CardDef look = piles[pile.HAND].get(i).getDef();
+			CardDef look = piles.get(pile.HAND.index).get(i).getDef();
 			if (look.getType() == CardDef.ctype.LOVE)
 			{
 				LoveCard lovelook = (LoveCard) look; 
@@ -91,7 +92,7 @@ public class Player {
 		}
 		for (int i=0; i<allCards.size(); i++)
 		{
-			CardDef look = allCards[i].getDef();
+			CardDef look = allCards.get(i).getDef();
 			if (look.getType() == CardDef.ctype.CAT)
 			{
 				CatCard catlook = (CatCard) look; 

@@ -1,8 +1,9 @@
 package com.cs446.purfect_litter.gameLogicManager.cardManager;
 
+import java.util.ArrayList;
 import java.util.Random;
 
-public static class CardDefLib {
+public class CardDefLib {
 	public static ArrayList<CardDef> lib = new ArrayList<CardDef>();
 
 	// create card definitions
@@ -16,7 +17,7 @@ public static class CardDefLib {
 		lib.addAll(lcf.Cards());
 		CatCardFactory ccf = new CatCardFactory();
 		ccf.CreateCards();
-		ArrayList<CardDef> tooManyCats = ccf.Cards();
+		ArrayList<CardDef> tooManyCats = new ArrayList<CardDef>(ccf.Cards());
 		for(int i=0;i<6;i++)
 		{
 			tooManyCats.remove(r.nextInt(tooManyCats.size()));//remove 6 cats at random

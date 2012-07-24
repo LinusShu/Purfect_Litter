@@ -24,7 +24,7 @@ public class GameState {
 	
 	GameState()
 	{
-		townCards = new ArrayList<ArrayLis<CardInstance>>();
+		townCards = new ArrayList<ArrayList<CardInstance>>();
 		players = new ArrayList<Player>();
 		lastActions = "";
 	}
@@ -69,10 +69,12 @@ public class GameState {
 		CardDef compare = chosen.getDef();
 		for (int i=0;i<townCards.size(); i++)
 		{
-			if (townCards[i].size()>0 && townCards[i].get(0).getDef() == compare)
+			if (townCards.get(i).size()>0 && townCards.get(i).get(0).getDef() == compare)
 			{
-				return townCards[i].remove(0);
+				return townCards.get(i).remove(0);
 			}
 		}
+		//THROW ERROR
+		return null;
 	}
 }

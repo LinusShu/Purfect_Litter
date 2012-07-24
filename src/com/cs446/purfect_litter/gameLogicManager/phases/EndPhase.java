@@ -9,6 +9,7 @@ public class EndPhase implements AbstractPhase{
 
 	@Override
 	public boolean pickCard(CardInstance chosen, GameLogic wrapper) {
+		return false;
 		// do nothing
 		
 	}
