@@ -10,20 +10,23 @@
 	    android:id="@+id/mainCardDetailImageView"
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
+	    android1:layout_marginBottom="15dp"
 	    android1:layout_weight="1" >
 
 </ImageView>
 
 	<Button
-	    android1:id="@+id/selectButton"
+	    android1:id="@+id/detail_action_button"
 	    android1:layout_width="match_parent"
 	    android1:layout_height="wrap_content"
+	    android1:onClick="cardDetailActionHandler"
 	    android1:text="Select" />
 
 	<Button
 	    android1:id="@+id/mainCardDetailCancelButton"
 	    android1:layout_width="match_parent"
 	    android1:layout_height="wrap_content"
+	    android1:onClick="cardDetailCancelHandler"
 	    android1:text="Cancel" />
 
 </LinearLayout>

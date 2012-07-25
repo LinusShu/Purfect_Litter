@@ -7,7 +7,9 @@ import java.net.Socket;
 
 import android.os.AsyncTask;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
+
 
 public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
     ServerManager gsm;
@@ -20,19 +22,11 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 	public ServerCommsTask(ServerManager gsm, Socket in, int pos) {
 		this.gsm = gsm;
 		this.s = in;
-		this.id = pos;
-		GameState initState = new GameState();
-		
-		initState.setID(gsm.getClientId(pos));
-		initState.currentAction = 180;
+		this.id = gsm.getClientId(pos);
 		
 		try {
-			//System.out.println("&&& socket has: " + s.getInputStream().toString() + " &&&");
 			oos = new ObjectOutputStream(s.getOutputStream());
 		    oin = new ObjectInputStream(s.getInputStream());
-		    //reply to the client's initial state
-		    oos.writeObject(initState);
-		    oos.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("!!! Can not get socket input/output stream !!!");
@@ -69,9 +63,9 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 			return false;
 		}
 		
-		g.setID(id);
+		g.setID(this.id);
 		try {
-			oos.reset();
+			//oos.reset();
 			System.out.println("&&& Sending game state to client: " + this.id + " &&&");
 			oos.writeObject(g);
 			oos.flush();
@@ -82,6 +76,17 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 		}
 		
 		return false;
+	}
+	
+	public void tearDown() {
+		try {
+			s.close();
+			oos.close();
+			oin.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("!!! Can not close client socket !!!");
+		}
 	}
 
 }

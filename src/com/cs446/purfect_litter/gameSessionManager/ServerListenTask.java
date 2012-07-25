@@ -7,13 +7,15 @@ import java.net.Socket;
 
 import android.os.AsyncTask;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
+
 
 public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> {
 	private ServerManager gsm;
 	private static ServerSocket ss = null;
+	private static Socket s = null;
 	private static final int SERVERPORT = 6000;
-	
 	
 	public ServerListenTask (ServerManager g) {
 		gsm = g;
@@ -21,10 +23,8 @@ public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> 
 	
 	@Override
 	protected Void doInBackground(GameSessionManager... arg0) {
-        Socket s = null;
 		GameState fromClient;
 		int clientCount = 0;
-		
 		System.out.println("&&& Listening for new clients &&&");
 		try {
 			ss = new ServerSocket (SERVERPORT);
@@ -56,21 +56,26 @@ public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> 
 				}
 			} catch (IOException e) {
 					e.printStackTrace();
+					gsm.shutDown();
 			} catch (ClassNotFoundException e) {
 					e.printStackTrace();
+					gsm.shutDown();
 			}
 		}
+	
 		
+	    return null;
+	}
+	
+	@Override
+	protected void onCancelled() {
 		try {
 			s.close();
 		    ss.close();
-		    gsm.shutDown();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("can not close sockets.");
 		}
-		
-	    return null;
 	}
 	
 }

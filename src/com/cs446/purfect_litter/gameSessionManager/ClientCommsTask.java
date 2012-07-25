@@ -5,9 +5,10 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.cs446.purfect_litter.GameState;
-
 import android.os.AsyncTask;
+
+import com.cs446.purfect_litter.gameLogicManager.GameLogic;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
 
 public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	GameState fromServer;
@@ -15,13 +16,14 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	Socket s;
     ObjectOutputStream oos;
     ObjectInputStream oin;
+    boolean initialized;
 	
 	public ClientCommsTask(ClientManager gsm, Socket in) {
 		this.gsm = gsm;
 		this.s = in;
+		initialized = false;
 		
 		try {
-			//System.out.println("&&& socket has: " + s.getInputStream().toString() + " &&&");
 			oos = new ObjectOutputStream(s.getOutputStream());
 		    oin = new ObjectInputStream(s.getInputStream());
 		} catch (IOException e) {
@@ -34,12 +36,22 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	protected Void doInBackground(GameSessionManager... arg0) {
 		while (!this.isCancelled()) {
 			try {
-				// if there is game state update from the server
+				// receive game state update from the server
 				fromServer = (GameState)oin.readObject();
+				// if the initial game state was received
+				if (initialized) {
 				// notify game flow manager there is a game state update from remote player
 				gsm.receive(fromServer);
 				System.out.println ("&&& GameState from Server: " + fromServer.currentAction + " &&&");
-				
+				}
+				// set the id for the client when received first 
+				else {
+					gsm.id = fromServer.getID();
+					String playername = gsm.id + "";
+					initialized = true;
+					gsm.gl = new GameLogic(fromServer, playername, gsm);
+					gsm.receive(fromServer);
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println ("!!! Can not get input stream !!!");
@@ -58,7 +70,7 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 		
 		g.setID(gsm.getId());
 		try {
-			oos.reset();
+//			oos.reset();
 			oos.writeObject(g);
 			oos.flush();
 			return true;
@@ -68,6 +80,17 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 		}
 		
 		return false;
+	}
+	
+	@Override
+	protected void onCancelled() {
+		try {
+			oos.close();
+			oin.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

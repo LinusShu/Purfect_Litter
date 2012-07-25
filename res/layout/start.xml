@@ -1,15 +1,8 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/LinearLayout"
+<LinearLayout 
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-
-    <TextView
-        android:id="@+id/app_title"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="Purfect Litter" />
     
     <Button
         android:id="@+id/sendButton"
@@ -27,11 +20,11 @@
         android:visibility="gone" >
         </Button>
 
-    <Button
-        android:id="@+id/button1"
+<!--     <Button
+        android:id="@+id/startGameButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="buttonHandler"
-        android:text="Start game" />
+        android:onClick="startGameHandler"
+        android:text="Start game" /> -->
 
 </LinearLayout>
