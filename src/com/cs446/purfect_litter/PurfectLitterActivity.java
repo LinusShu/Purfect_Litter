@@ -6,7 +6,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -15,7 +14,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
-import com.cs446.purfect_litter.gameLogicManager.cardManager.Card;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.CatCardFactory;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.EventCardFactory;
 import com.cs446.purfect_litter.gameLogicManager.cardManager.LoveCardFactory;
@@ -113,7 +112,7 @@ public class PurfectLitterActivity extends Activity {
 
     	
     	
-    	
+    	/*
         //create card definitions using the card factory methods
         List<Card> LoveCards = new ArrayList<Card>();
         List<Card> EventCards = new ArrayList<Card>();
@@ -122,7 +121,7 @@ public class PurfectLitterActivity extends Activity {
         LoveCards = new LoveCardFactory().Cards();
         EventCards = new EventCardFactory().Cards();
         CatCards = new CatCardFactory().Cards();
-        
+        */
     }
 
     

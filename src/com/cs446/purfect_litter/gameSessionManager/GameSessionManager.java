@@ -1,6 +1,8 @@
 package com.cs446.purfect_litter.gameSessionManager;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
+
 
 public abstract class GameSessionManager {
 	

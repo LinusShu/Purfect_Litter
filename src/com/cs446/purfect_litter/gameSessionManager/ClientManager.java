@@ -6,7 +6,9 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
+
 
 public class ClientManager extends GameSessionManager {
 	Socket outGoingSocket = null;

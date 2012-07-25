@@ -7,7 +7,9 @@ import java.net.Socket;
 
 import android.os.AsyncTask;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
+
 
 public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
     ServerManager gsm;

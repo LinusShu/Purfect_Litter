@@ -11,8 +11,31 @@ public final class R {
     public static final class attr {
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
-        public static final int ic_menu_close_clear_cancel=0x7f020001;
+        public static final int card_badhabit=0x7f020000;
+        public static final int card_cat1=0x7f020001;
+        public static final int card_cat10=0x7f020002;
+        public static final int card_cat11=0x7f020003;
+        public static final int card_cat12=0x7f020004;
+        public static final int card_cat13=0x7f020005;
+        public static final int card_cat14=0x7f020006;
+        public static final int card_cat15=0x7f020007;
+        public static final int card_cat16=0x7f020008;
+        public static final int card_cat17=0x7f020009;
+        public static final int card_cat18=0x7f02000a;
+        public static final int card_cat2=0x7f02000b;
+        public static final int card_cat3=0x7f02000c;
+        public static final int card_cat4=0x7f02000d;
+        public static final int card_cat5=0x7f02000e;
+        public static final int card_cat6=0x7f02000f;
+        public static final int card_cat7=0x7f020010;
+        public static final int card_cat8=0x7f020011;
+        public static final int card_cat9=0x7f020012;
+        public static final int card_illness=0x7f020013;
+        public static final int card_love1=0x7f020014;
+        public static final int card_love2=0x7f020015;
+        public static final int card_love3=0x7f020016;
+        public static final int ic_launcher=0x7f020017;
+        public static final int ic_menu_close_clear_cancel=0x7f020018;
     }
     public static final class id {
         public static final int broadcastButton=0x7f060001;

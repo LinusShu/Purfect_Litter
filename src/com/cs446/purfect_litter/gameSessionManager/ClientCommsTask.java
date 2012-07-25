@@ -5,9 +5,9 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-import com.cs446.purfect_litter.GameState;
-
 import android.os.AsyncTask;
+
+import com.cs446.purfect_litter.gameLogicManager.GameState;
 
 public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	GameState fromServer;

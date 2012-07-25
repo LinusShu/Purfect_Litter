@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import com.cs446.purfect_litter.GameState;
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+
 
 public class ServerManager extends GameSessionManager{
 	List<ServerCommsTask> clients = new ArrayList<ServerCommsTask>();
