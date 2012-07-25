@@ -41,11 +41,20 @@ public class ServerManager extends GameSessionManager{
 	// default send method used to send game state updates to all the clients currently have their
 	// address registered in clientAddr
 	@Override
-	public void send(GameState g) {
+	public boolean send(GameState g) {
 		for (ServerCommsTask ct : clients) {
-			System.out.println("&&& been here ServerManager::send() loop&&&");
-			ct.send(g);
+			// if fail to send to one of the clients
+			if (! ct.send(g)) {
+				// tear down all the connections between all clients
+				for (ServerCommsTask ct2: clients) {
+					ct2.tearDown();
+				}
+				// shut down the game
+				this.shutDown();
+				return false;
+			}
 		}
+		return true;
 	}
 	
 	// send game state updates to a specific player
@@ -53,6 +62,17 @@ public class ServerManager extends GameSessionManager{
 	public void sendTo(GameState g, int player) {
 	    clients.get(player).send(g);
 	}
+
+
+    public void shutDown() {
+    	try {
+    		lt.cancel(true);
+			int pid = android.os.Process.myPid();
+			android.os.Process.killProcess(pid);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
 
 }
 

@@ -6,7 +6,7 @@ public abstract class GameSessionManager {
 	
 	//called to send game state updates to default targets
 	//See comments in ClientManager and ServerManager for detailed behaviour
-	public abstract void send(GameState g);
+	public abstract boolean send(GameState g);
 	
 	
 	//should not be called manually other than the CommsTask class
@@ -15,12 +15,6 @@ public abstract class GameSessionManager {
 	}
 	
 	//used to tear down connection and kill application processes when network error occurs
-	public void shutDown(){
-		try {
-			int pid = android.os.Process.myPid();
-			android.os.Process.killProcess(pid);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
+	public abstract void shutDown();
+
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
@@ -21,12 +22,14 @@ import com.cs446.purfect_litter.gameLogicManager.cardManager.LoveCardFactory;
 import com.cs446.purfect_litter.gameSessionManager.ClientManager;
 import com.cs446.purfect_litter.gameSessionManager.GameSessionManager;
 import com.cs446.purfect_litter.gameSessionManager.ServerManager;
+import com.cs446.purfect_litter.ui.MsgDialog;
 
 
 public class PurfectLitterActivity extends Activity {
 	private Button sendBt, broadcastBt;
 	GameSessionManager gsm;
 	GameState g = new GameState();
+	MsgDialog d;
 
 	
 	// create menu and menu item "exit"
@@ -55,9 +58,15 @@ public class PurfectLitterActivity extends Activity {
 		final CharSequence[] gameModeItems = {"Server", "Client"};
 		super.onCreate(savedInstanceState);
         setContentView(R.layout.main_frame);
-    
+        
+        
         g.currentAction = 19;
     	g.currentLove = 89;
+    	
+    	/*
+    	d = new MsgDialog(this, "Error", "Msg");
+    	d.show();
+    	*/
     	
     	// define testing buttons
     	sendBt = (Button) findViewById(R.id.sendButton);

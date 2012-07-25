@@ -83,5 +83,16 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 		
 		return false;
 	}
+	
+	public void tearDown() {
+		try {
+			s.close();
+			oos.close();
+			oin.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			System.out.println("!!! Can not close client socket !!!");
+		}
+	}
 
 }

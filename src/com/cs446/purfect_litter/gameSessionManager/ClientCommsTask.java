@@ -15,13 +15,16 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	Socket s;
     ObjectOutputStream oos;
     ObjectInputStream oin;
+    int id;
+    boolean initialized;
 	
 	public ClientCommsTask(ClientManager gsm, Socket in) {
 		this.gsm = gsm;
 		this.s = in;
+		this.id = gsm.getId();
+		initialized = false;
 		
 		try {
-			//System.out.println("&&& socket has: " + s.getInputStream().toString() + " &&&");
 			oos = new ObjectOutputStream(s.getOutputStream());
 		    oin = new ObjectInputStream(s.getInputStream());
 		} catch (IOException e) {
@@ -34,12 +37,19 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	protected Void doInBackground(GameSessionManager... arg0) {
 		while (!this.isCancelled()) {
 			try {
-				// if there is game state update from the server
+				// receive game state update from the server
 				fromServer = (GameState)oin.readObject();
+				// if the initial game state was received
+				if (initialized) {
 				// notify game flow manager there is a game state update from remote player
 				gsm.receive(fromServer);
 				System.out.println ("&&& GameState from Server: " + fromServer.currentAction + " &&&");
-				
+				}
+				// set the id for the client when received 
+				else {
+					gsm.id = fromServer.getID();
+					initialized = true;
+				}
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println ("!!! Can not get input stream !!!");
@@ -68,6 +78,17 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 		}
 		
 		return false;
+	}
+	
+	@Override
+	protected void onCancelled() {
+		try {
+			oos.close();
+			oin.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

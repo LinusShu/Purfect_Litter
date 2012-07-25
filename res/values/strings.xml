@@ -3,5 +3,6 @@
 
     <string name="hello">Hello World, Purfect_LitterActivity!</string>
     <string name="app_name">Purfect_Litter</string>
+    <string name="ok">OK</string>
 
 </resources>
