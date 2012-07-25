@@ -4,8 +4,8 @@ public class EventCard extends CardDef {
 	private int vp;
 	//private Effect effect;
 	
-	public EventCard(int cost, String name, int n_vp, int number /*, Effect n_effect*/){
-		super(cost,name,number);
+	public EventCard(int cost, String name, int n_vp, int number, int image /*, Effect n_effect*/){
+		super(cost,name,number,image);
 		vp = n_vp;
 		t = ctype.EVENT;
 		//effect = n_effect;

@@ -9,8 +9,8 @@ public class CatCard extends CardDef{
 	// colour is assign as: Chief/green=0; General/blue=1; Private/black=2.
 	public CatCard(int cost, String name, int nColour, int nVP, int nDraw,
 			int nLove, int nAction, int nPurchase, int nChamberCost, boolean nHasVP, 
-			int number/*Effect effect*/){
-		super(cost,name,number);
+			int number, int image/*Effect effect*/){
+		super(cost,name,number,image);
 		colour = nColour;
 		vp = nVP;
 		draw = nDraw;

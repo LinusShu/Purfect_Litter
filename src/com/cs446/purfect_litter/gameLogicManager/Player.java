@@ -100,4 +100,14 @@ public class Player {
 			}
 		}
 	}
+	
+	public int[] getImageArray(pile p)
+	{
+		int[] rv= new int[piles.get(p.index).size()];
+		for (int i=0;i<piles.get(p.index).size();i++)
+		{
+			rv[i]=piles.get(p.index).get(i).getDef().getImage();
+		}
+		return rv;
+	}
 }

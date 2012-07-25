@@ -8,13 +8,15 @@ public class CardDef {
 	private String name;
 	protected ctype t;
 	private int number;
+	private int image;
 	
 	
 	
-	public CardDef(int cost, String name, int number) {
+	public CardDef(int cost, String name, int number, int image) {
 		this.cost = cost;
 		this.name = name;
 		this.number = number;
+		this.image = image;
 	}
 
 	public int getCost() {
@@ -31,6 +33,10 @@ public class CardDef {
 	
 	public int getNumber(){
 		return number;
+	}
+	
+	public int getImage(){
+		return image;
 	}
 }
 
