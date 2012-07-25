@@ -1,2 +1,3 @@
 bin/
-.png
+*.DS_Store
+*.png
