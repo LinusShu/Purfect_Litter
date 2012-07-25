@@ -7,6 +7,7 @@ import java.util.List;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +55,7 @@ public class PurfectLitterActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
 		final CharSequence[] gameModeItems = {"Server", "Client"};
 		super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_frame);
+        setContentView(R.layout.activity_start);
     
         g.currentAction = 19;
     	g.currentLove = 89;
@@ -101,10 +102,6 @@ public class PurfectLitterActivity extends Activity {
     	AlertDialog alert = selectMode.create();
     	alert.show();
     	
-
-    	
-    	
-    	
         //create card definitions using the card factory methods
         List<Card> LoveCards = new ArrayList<Card>();
         List<Card> EventCards = new ArrayList<Card>();
@@ -116,5 +113,15 @@ public class PurfectLitterActivity extends Activity {
         
     }
 
-    
+	// ===========================================================
+	
+	public void buttonHandler(View view) {
+		goToMainActivity();
+	}
+	
+	// Go to MainActivity
+	public void goToMainActivity() {
+		Intent intent = new Intent(this, MainActivity.class);
+		startActivity(intent);
+	}
 }

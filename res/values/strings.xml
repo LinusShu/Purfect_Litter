@@ -2,6 +2,9 @@
 <resources>
 
     <string name="hello">Hello World, Purfect_LitterActivity!</string>
-    <string name="app_name">Purfect_Litter</string>
+    <string name="app_name">Purfect Litter</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">Main Activity</string>
 
 </resources>

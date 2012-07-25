@@ -10,24 +10,95 @@ package com.cs446.purfect_litter;
 public final class R {
     public static final class attr {
     }
+    public static final class dimen {
+        public static final int padding_large=0x7f040002;
+        public static final int padding_medium=0x7f040001;
+        public static final int padding_small=0x7f040000;
+    }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
-        public static final int ic_menu_close_clear_cancel=0x7f020001;
+        public static final int card_badhabit=0x7f020000;
+        public static final int card_cat1=0x7f020001;
+        public static final int card_cat10=0x7f020002;
+        public static final int card_cat11=0x7f020003;
+        public static final int card_cat12=0x7f020004;
+        public static final int card_cat13=0x7f020005;
+        public static final int card_cat14=0x7f020006;
+        public static final int card_cat15=0x7f020007;
+        public static final int card_cat16=0x7f020008;
+        public static final int card_cat17=0x7f020009;
+        public static final int card_cat18=0x7f02000a;
+        public static final int card_cat2=0x7f02000b;
+        public static final int card_cat3=0x7f02000c;
+        public static final int card_cat4=0x7f02000d;
+        public static final int card_cat5=0x7f02000e;
+        public static final int card_cat6=0x7f02000f;
+        public static final int card_cat7=0x7f020010;
+        public static final int card_cat8=0x7f020011;
+        public static final int card_cat9=0x7f020012;
+        public static final int card_illness=0x7f020013;
+        public static final int card_love1=0x7f020014;
+        public static final int card_love2=0x7f020015;
+        public static final int card_love3=0x7f020016;
+        public static final int ic_action_search=0x7f020017;
+        public static final int ic_launcher=0x7f020018;
+        public static final int ic_menu_close_clear_cancel=0x7f020019;
     }
     public static final class id {
-        public static final int app_title=0x7f060000;
-        public static final int broadcastButton=0x7f060002;
-        public static final int exit=0x7f060003;
-        public static final int sendButton=0x7f060001;
+        public static final int LinearLayout=0x7f070001;
+        public static final int app_title=0x7f070002;
+        public static final int broadcastButton=0x7f070004;
+        public static final int button1=0x7f070005;
+        public static final int exit=0x7f070011;
+        public static final int mainCardDetailCancelButton=0x7f070008;
+        public static final int mainCardDetailImageView=0x7f070006;
+        public static final int mainCardGallery=0x7f07000c;
+        public static final int mainViewFlipper=0x7f070000;
+        public static final int menu_settings=0x7f070010;
+        public static final int playersListView=0x7f070009;
+        public static final int selectButton=0x7f070007;
+        public static final int sendButton=0x7f070003;
+        public static final int textView1=0x7f07000b;
+        public static final int textView2=0x7f07000a;
+        public static final int textView3=0x7f07000d;
+        public static final int textView4=0x7f07000e;
+        public static final int textView5=0x7f07000f;
     }
     public static final class layout {
-        public static final int main_frame=0x7f030000;
+        public static final int activity_main=0x7f030000;
+        public static final int activity_start=0x7f030001;
+        public static final int card_detail=0x7f030002;
+        public static final int dashboard=0x7f030003;
     }
     public static final class menu {
-        public static final int main_menu=0x7f050000;
+        public static final int activity_main=0x7f060000;
+        public static final int main_menu=0x7f060001;
     }
     public static final class string {
-        public static final int app_name=0x7f040001;
-        public static final int hello=0x7f040000;
+        public static final int app_name=0x7f050001;
+        public static final int hello=0x7f050000;
+        public static final int hello_world=0x7f050002;
+        public static final int menu_settings=0x7f050003;
+        public static final int title_activity_main=0x7f050004;
     }
+    public static final class styleable {
+        /** Attributes that can be used with a Gallery1.
+           <p>Includes the following attributes:</p>
+           <table>
+           <colgroup align="left" />
+           <colgroup align="left" />
+           <tr><th>Attribute</th><th>Description</th></tr>
+           <tr><td><code>{@link #Gallery1_android_galleryItemBackground com.cs446.purfect_litter:android_galleryItemBackground}</code></td><td></td></tr>
+           </table>
+           @see #Gallery1_android_galleryItemBackground
+         */
+        public static final int[] Gallery1 = {
+            0x0101004c
+        };
+        /**
+          <p>This symbol is the offset where the {@link com.cs446.purfect_litter.R.attr#android_galleryItemBackground}
+          attribute's value can be found in the {@link #Gallery1} array.
+          @attr name android:android_galleryItemBackground
+        */
+        public static final int Gallery1_android_galleryItemBackground = 0;
+    };
 }
