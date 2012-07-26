@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="250dp"
         android:orientation="vertical"
-        android:padding="10dp" >
+        android:padding="10dp">
 
         <TextView
             android:id="@+id/player_name_text"
@@ -30,11 +30,23 @@
             android:layout_height="wrap_content"
             android:text="Game Log:"
             android:textAppearance="?android:attr/textAppearanceMedium" />
-
-        <TextView
-            android:id="@+id/game_log_text"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+       
+       <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+           android:layout_height="150dp" 
+           android:layout_width="match_parent">
+           
+           <LinearLayout
+               android:id="@+id/game_log_listting"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:orientation="vertical"
+               android:padding="10dp">
+               <TextView
+                   android:id="@+id/game_log_text"
+                   android:layout_width="match_parent"
+                   android:layout_height="wrap_content" />
+           </LinearLayout>
+        </ScrollView>
 
     </LinearLayout>
 

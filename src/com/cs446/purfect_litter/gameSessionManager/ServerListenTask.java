@@ -41,16 +41,21 @@ public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> 
 				ObjectInputStream in = new ObjectInputStream(s.getInputStream());
 				fromClient = (GameState)in.readObject();
 				//DEBUG 
-				System.out.println ("&&& Receieved new game state from client#" + fromClient.getID() + " &&&");
+				System.out.println ("&&& Receieved new client connection: clientID# = " + fromClient.getID() + " &&&");
 				// check to see if it's a game state from the client
 				if (gsm.addClient(fromClient.getID())) {
-					ServerCommsTask ct = new ServerCommsTask(gsm, s, clientCount);
-				    ct.execute(gsm);
-				    gsm.addClientTask(ct);
-				    //DEBUG
+					//DEBUG
 				    System.out.println("&&& Now clients are: ");
 				    for (Integer client : gsm.clientIDs) 
 					      System.out.println(client.intValue() + ", ");
+				    
+				    // create a new ServerCommsTask that listens to the connected client
+					ServerCommsTask ct = new ServerCommsTask(gsm, s, clientCount);
+					// execute the ServerCommsTask
+				    ct.execute(gsm);
+					// add the ServerCommsTask to the client list, as well as start server-side GameLogic
+					gsm.addClientTask(ct);
+					
 				    
 				    clientCount ++;
 				}

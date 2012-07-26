@@ -79,6 +79,7 @@ public class ClientManager extends GameSessionManager {
     	initState.setID(-1);
     	
     	try {
+    		// send initial game state to the server
     		ObjectOutputStream oos = new ObjectOutputStream(outGoingSocket.getOutputStream());
     		oos.writeObject(initState);
 			oos.flush();

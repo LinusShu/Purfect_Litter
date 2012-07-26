@@ -1,16 +1,5 @@
 package com.cs446.purfect_litter;
 
-import java.security.PublicKey;
-
-import com.cs446.purfect_litter.gameLogicManager.GameState;
-import com.cs446.purfect_litter.gameLogicManager.Player;
-import com.cs446.purfect_litter.gameLogicManager.Player.pile;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
-import com.cs446.purfect_litter.gameSessionManager.ClientManager;
-import com.cs446.purfect_litter.gameSessionManager.GameSessionManager;
-import com.cs446.purfect_litter.gameSessionManager.ServerManager;
-
-import android.R.integer;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -22,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
@@ -32,6 +20,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
+
+import com.cs446.purfect_litter.gameLogicManager.GameState;
+import com.cs446.purfect_litter.gameLogicManager.Player;
+import com.cs446.purfect_litter.gameLogicManager.Player.pile;
+import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
+import com.cs446.purfect_litter.gameSessionManager.ClientManager;
+import com.cs446.purfect_litter.gameSessionManager.GameSessionManager;
+import com.cs446.purfect_litter.gameSessionManager.ServerManager;
 
 public class MainActivity extends Activity {
 	

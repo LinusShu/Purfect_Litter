@@ -29,6 +29,7 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("!!! Can not get socket input/output stream !!!");
+			gsm.shutDown();
 		}
 	}
 	
@@ -55,8 +56,10 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println ("!!! Can not get input stream !!!");
+				gsm.shutDown();
 		    } catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				gsm.shutDown();
 		    }
 		}
 		return null;
@@ -70,13 +73,13 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 		
 		g.setID(gsm.getId());
 		try {
-//			oos.reset();
-			oos.writeObject(g);
+			oos.writeUnshared(g);
 			oos.flush();
 			return true;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("!!! Can not send/write game state !!!");
+			gsm.shutDown();
 		}
 		
 		return false;

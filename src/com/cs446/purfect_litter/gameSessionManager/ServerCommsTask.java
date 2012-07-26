@@ -48,8 +48,13 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.out.println ("!!! Can not get input stream !!!");
+				this.cancel(true);
+				gsm.shutDown();
 		    } catch (ClassNotFoundException e) {
 				e.printStackTrace();
+				System.out.println ("!!! Not valid game state object !!!");
+				this.cancel(true);
+				gsm.shutDown();
 		    }
 		}
 		
@@ -65,27 +70,28 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 		
 		g.setID(this.id);
 		try {
-			//oos.reset();
-			System.out.println("&&& Sending game state to client: " + this.id + " &&&");
-			oos.writeObject(g);
+			System.out.println("&&& Sending game state to client: " + this.id + " with action " + g.currentAction +  " &&&");
+			oos.writeUnshared(g);
 			oos.flush();
 			return true;
-		} catch (Exception e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("!!! Can not send/write game state !!!");
+			this.cancel(true);
+			gsm.shutDown();
 		}
 		
 		return false;
 	}
 	
-	public void tearDown() {
+	@Override
+	public void onCancelled() {
 		try {
-			s.close();
 			oos.close();
 			oin.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.out.println("!!! Can not close client socket !!!");
+			System.out.println("!!! Can not close client socket's i/o stream !!!");
 		}
 	}
 

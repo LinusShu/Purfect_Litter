@@ -20,24 +20,24 @@ public class ServerManager extends GameSessionManager{
 	
 	Random ran = new Random();
 	GameLogic gl;	
-	
-	ServerListenTask lt = new ServerListenTask(this);
+	ServerListenTask lt;
 	
 	public ServerManager(MainActivity mainActivity) {
 		this.mainActivity = mainActivity;
 		// add server as the first 
+		lt = new ServerListenTask(this);
 	    playerNames.add("Host");
 		lt.execute();
 	}
 	
 	
-	public boolean addClient(int i) {
-		Integer id = new Integer(i);
-				
-		// if not registered and number of players(excluding the host) in the game is less than 3
-		if (! clientIDs.contains(id) && clientIDs.isEmpty() ) {
+	public boolean addClient(int id) {
+		// NOTE:
+		// hard-coded so that only on player can be registered to the server
+		// change to if (clientIDs.size() < 3) when need to support 3 other clients
+		if (clientIDs.isEmpty() && id == -1) {
 			    int assignID = ran.nextInt(1000);
-			    clientIDs.add(assignID);
+			    clientIDs.add(new Integer(assignID));
 			    String playername = assignID + "";
 			    playerNames.add(playername);
 			    return true;
@@ -64,11 +64,13 @@ public class ServerManager extends GameSessionManager{
 			if (! ct.send(g)) {
 				// tear down all the connections between all clients
 				for (ServerCommsTask ct2: clients) {
-					ct2.tearDown();
+					// cancel the ServerCommsTask  
+					ct2.cancel(true);
+					clients.remove(ct2);
+					// shut down the game
+					this.shutDown();
+					return false;
 				}
-				// shut down the game
-				this.shutDown();
-				return false;
 			}
 		}
 		return true;
@@ -88,7 +90,15 @@ public class ServerManager extends GameSessionManager{
 
     public void shutDown() {
     	try {
+    		// cancel the ServerListenTask
     		lt.cancel(true);
+    		
+    		// cancel all running ServerCommsTask
+    		if (! clients.isEmpty()) {
+    			for (ServerCommsTask ct : clients) 
+    				ct.cancel(true);
+    		}
+    		
 			int pid = android.os.Process.myPid();
 			android.os.Process.killProcess(pid);
 		} catch (Exception e) {
