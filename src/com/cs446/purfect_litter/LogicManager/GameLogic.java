@@ -3,10 +3,12 @@ package com.cs446.purfect_litter.LogicManager;
 import java.util.ArrayList;
 import java.util.Random;
 
+import com.cs446.purfect_litter.LogicManager.GameState.phase;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardDef;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardDefLib;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
 import com.cs446.purfect_litter.LogicManager.Phases.AbstractPhase;
+import com.cs446.purfect_litter.LogicManager.Phases.OOTPhase;
 import com.cs446.purfect_litter.LogicManager.Phases.StartingPhase;
 
 
@@ -144,6 +146,8 @@ public class GameLogic {
 		if (table.gameOver())
 		{
 			table.findVictor();
+			table.currentPhase= phase.VICTORY;
+			setPhase(new OOTPhase());
 			return true;
 		}
 		
