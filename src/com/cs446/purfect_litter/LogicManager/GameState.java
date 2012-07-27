@@ -4,12 +4,15 @@ package com.cs446.purfect_litter.LogicManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import android.R.integer;
+import android.graphics.AvoidXfermode.Mode;
+
 import com.cs446.purfect_litter.R;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardDef;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
 
 
-public class GameState implements Serializable{
+public class GameState extends Object implements Serializable {
 
 	/**
 	 * 
@@ -53,17 +56,10 @@ public class GameState implements Serializable{
 		lastActions = "";
 	}
 	
-	public Player nextPlayer()
+	public void setNextPlayer()
 	{
-		if (players.indexOf(currentPlayer)+1 == players.size())
-		{
-			currentPlayer = players.get(0);
-		}
-		else
-		{
-			currentPlayer = players.get(players.indexOf(currentPlayer)+1);
-		}
-		return currentPlayer;
+		int index = players.indexOf(currentPlayer);
+		currentPlayer = players.get((index + 1) % players.size());
 	}
 	
 	boolean gameOver()
@@ -112,7 +108,6 @@ public class GameState implements Serializable{
 	
 	public String pullLastActions() {
 		String rv = lastActions;
-		lastActions = "";
 		return rv;
 	}
 	

@@ -28,9 +28,8 @@ public class EndPhase implements AbstractPhase{
 		
 		wrapper.getGs().currentPhase = GameState.phase.OOT;
 		wrapper.getGs().lastActions += wrapper.getMe().getName() + " ends his turn\n";
-		wrapper.getGs().currentPlayer = wrapper.getGs().nextPlayer();
+		wrapper.getGs().setNextPlayer();
 		wrapper.setPhase(new OOTPhase());
-		
 	}
 
 	@Override

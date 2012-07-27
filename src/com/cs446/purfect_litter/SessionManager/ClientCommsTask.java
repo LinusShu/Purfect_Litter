@@ -41,7 +41,7 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 				// if the initial game state was received
 				if (initialized) {
 				// notify game flow manager there is a game state update from remote player
-				gsm.receive(fromServer);
+				gsm.getGame().doReceiveGameState(fromServer);
 				System.out.println ("&&& GameState from Server: " + fromServer.currentAction + " &&&");
 				}
 				// set the id for the client when received first 
@@ -50,7 +50,7 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 					String playername = gsm.id + "";
 					initialized = true;
 					gsm.getGame().createLogicForClient(fromServer, playername);
-					gsm.getGame().receiveGameState(fromServer);
+					gsm.getGame().doReceiveGameState(fromServer);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

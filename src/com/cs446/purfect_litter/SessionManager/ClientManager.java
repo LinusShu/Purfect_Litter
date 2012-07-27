@@ -66,7 +66,7 @@ public class ClientManager extends GameSessionManager {
 
 	@Override
 	public void receive(GameState fromServer) {
-		G.receiveGameState(fromServer);
+		G.doReceiveGameState(fromServer);
 	}
 	
 	// send an initial game state to the server to register the client

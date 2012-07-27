@@ -73,7 +73,7 @@ public class ServerManager extends GameSessionManager{
 	
 	@Override
 	public void receive(GameState fromClient) {
-		G.receiveGameState(fromClient);
+		G.doReceiveGameState(fromClient);
 	}
 	
 	// send game state updates to a specific player

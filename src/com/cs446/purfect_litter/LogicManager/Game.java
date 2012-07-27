@@ -33,41 +33,47 @@ public class Game {
 
 	// SETTERS ======================================================
 	
-	public void doNextPhase() {
-		// ...
-		gameLogic.getPhase().nextPhase(gameLogic);
+	public void createLogicForServer(ArrayList<String> playerNames)
+	{
+		gameLogic = new GameLogic(playerNames, this);
+		doSendGameState(gameLogic.getGs());
+		if (gameLogic.update(gameLogic.getGs())) {
+			doSendGameState(gameLogic.getGs());
+		}
+	}
+	
+	public void createLogicForClient(GameState newGs, String playerName)
+	{
+		gameLogic = new GameLogic(newGs, playerName, this);
+		if (gameLogic.update(gameLogic.getGs())) {
+			doSendGameState(gameLogic.getGs());
+		}
+	}
+	
+	public void doSendGameState(GameState curState) {
+		gameSessionManager.send(curState);
 		gameUI.update();
+	}
+	
+	public void doReceiveGameState(GameState newGs) {
+		if (gameLogic.update(newGs)) {
+			doSendGameState(gameLogic.getGs());
+		}
+		else {
+			gameUI.update();
+		}
+	}
+	
+	public void doNextPhase() {
+		gameLogic.getPhase().nextPhase(gameLogic);
+		doSendGameState(gameLogic.getGs());
 	}
 	
 	public void doPickCard(CardInstance whichCard) {
 		gameLogic.getPhase().pickCard(whichCard, gameLogic);
     	gameUI.update();
 	}
-	
-	public void createLogicForServer(ArrayList<String> playerNames)
-	{
-		gameLogic = new GameLogic(playerNames, this);
-		doSendGameState(gameLogic.getGs());
-		gameLogic.update(gameLogic.getGs());
-	}
-	
-	public void createLogicForClient(GameState newGs, String playerName)
-	{
-		gameLogic = new GameLogic(newGs, playerName, this);
-		gameLogic.update(gameLogic.getGs());
-	}
-	
-	public void doSendGameState(GameState curState)
-	{
-		gameSessionManager.send(curState);
-		gameUI.update();
-	}
-	
-	public void receiveGameState(GameState newGs)
-	{
-		gameLogic.update(newGs);
-		gameUI.update();
-	}
+
 	// GETTERS ======================================================
 	
 	public boolean isItMyTurn() {

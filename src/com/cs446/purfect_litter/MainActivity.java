@@ -105,6 +105,13 @@ public class MainActivity extends Activity {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
+    
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+    	boolean status = G.isItMyTurn();
+		menu.getItem(0).setEnabled(status);
+    	return true;
+    }
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -159,22 +166,37 @@ public class MainActivity extends Activity {
 	// ==============================================================
     
     public void handHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(true);
+    	}
     	setGallery(Player.Pile.HAND, 0);
     }
     
     public void playedHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
     	setGallery(Player.Pile.PLAYED, 1);
     }
     
     public void discardHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
     	setGallery(Player.Pile.DISCARD, 2);
     }
     
     public void chamberHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
     	setGallery(Player.Pile.CHAMBER, 3);
     }
     
     public void deckHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
     	setGallery(Pile.DECK, 4);
     }
     
@@ -218,16 +240,24 @@ public class MainActivity extends Activity {
                 	loveTextView.setText("Love: " + G.getGameState().currentLove);
                 	actionTextView.setText("Action: " + G.getGameState().currentAction);
                 	purchaseTextView.setText("Purchase: " + G.getGameState().currentPurchase);
+                	
+            		cardDetailActionButton.setEnabled(true);
             	}
             	// NOT MY TURN
             	else {
             		currentPhaseTextView.setText("Current Phase: Not Your Turn");
+                	loveTextView.setText("");
+                	actionTextView.setText("");
+                	purchaseTextView.setText("");
+                	
+            		cardDetailActionButton.setEnabled(false);
             	}
+            	
             	playerNameTextView.setText("Hello, " + G.getMyName());
             	setGallery(Player.Pile.HAND, 0);
             	
-            	String gameLog = (String) gameLogTextView.getText();
-            	gameLogTextView.setText(G.getGameState().pullLastActions() + gameLog);
+//            	String gameLog = (String) gameLogTextView.getText();
+            	gameLogTextView.setText(G.getGameState().pullLastActions());
             }
     	});
     }

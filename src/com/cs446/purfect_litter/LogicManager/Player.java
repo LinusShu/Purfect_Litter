@@ -67,7 +67,9 @@ public class Player implements Serializable {
 				}
 			}
 //			Log.d("SIZE OF DECK", piles.get(pile.DECK.index).size() + "");
-			piles.get(d.index).add(piles.get(s.index).remove(0));
+			if (piles.get(Pile.DECK.index).size() > 0) {
+				piles.get(d.index).add(piles.get(s.index).remove(0));
+			}
 		}
 		else // if its from anywhere else, move the entire pile
 		{

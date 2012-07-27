@@ -43,6 +43,12 @@ public class GameLogic {
 		}
 	}
 	
+	/**
+	 * Server Constructor
+	 * 
+	 * @param playerNames
+	 * @param comm
+	 */
 	public GameLogic(ArrayList<String> playerNames, Game comm)//ASSUMING the CURRENT PLAYER IS FIRST
 	{
 		CardDefLib.populate();
@@ -124,10 +130,10 @@ public class GameLogic {
 	{
 		currentPhase = tothis;
 		currentPhase.init(this);
-			comm.doSendGameState(table);
+//		comm.doSendGameState(table);
 	}
 	
-	public void update(GameState newGS)
+	public boolean update(GameState newGS)
 	{
 		table = newGS;
 		
@@ -138,12 +144,15 @@ public class GameLogic {
 		if (table.gameOver())
 		{
 			table.findVictor();
+			return true;
 		}
 		
-		if (table.currentPlayer == me && table.currentPhase == GameState.phase.OOT)
+		if (table.currentPlayer.name.equals(me.name) && table.currentPhase == GameState.phase.OOT)
 		{
 			setPhase((AbstractPhase) new StartingPhase());
+			return true;
 		}
+		return false;
 	}
 	
 	public GameState getGs()

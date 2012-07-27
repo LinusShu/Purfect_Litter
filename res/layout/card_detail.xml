@@ -27,6 +27,6 @@
 	    android1:layout_width="match_parent"
 	    android1:layout_height="wrap_content"
 	    android1:onClick="cardDetailCancelHandler"
-	    android1:text="Cancel" />
+	    android1:text="Back" />
 
 </LinearLayout>
