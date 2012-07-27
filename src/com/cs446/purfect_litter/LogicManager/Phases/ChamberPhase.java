@@ -29,7 +29,7 @@ public class ChamberPhase implements AbstractPhase{
 
 		wrapper.getMe().move(chosen, Player.Pile.HAND, Player.Pile.CHAMBER);
 		wrapper.getGs().currentAction -= catlook.getChamberCost();
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + " sends " + chosen.getDef().getName() + " to his chamber.\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + " sends " + chosen.getDef().getName() + " to his chamber.\n"+ wrapper.getGs().lastActions;
 		return true;
 
 	}
@@ -43,7 +43,7 @@ public class ChamberPhase implements AbstractPhase{
 	@Override
 	public void nextPhase(GameLogic wrapper) {
 		
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + " ends his chamber phase\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + " ends his chamber phase\n"+ wrapper.getGs().lastActions;
 		wrapper.getGs().currentPhase = GameState.phase.PURCHASE;
 		wrapper.setPhase((AbstractPhase) new PurchasePhase());
 		

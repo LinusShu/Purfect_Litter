@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/purchase_view"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@drawable/bg">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="35dp" />
+
+    <FrameLayout 
+        android:id="@android:id/tabcontent"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+        
+        <include 
+            android:id="@+id/loveTab"
+            layout="@layout/purchase_love" />
+        
+        <include 
+            android:id="@+id/generalTab"
+            layout="@layout/purchase_general" />
+        
+        <include
+            android:id="@+id/chiefTab"
+            layout="@layout/purchase_chief" />
+        
+    </FrameLayout>
+    
+    </LinearLayout>
+    
+</TabHost>

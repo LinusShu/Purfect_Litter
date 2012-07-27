@@ -5,9 +5,27 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity" >
     
-    <include layout="@layout/start" />
+    <include
+        android:id="@+id/start_view" 
+        layout="@layout/start" />
 
-	<include layout="@layout/dashboard" />
+	<include
+	    android:id="@+id/dashboard_view" 
+	    layout="@layout/dashboard" />
 	
-	<include layout="@layout/card_detail" />
+	<include
+	    android:id="@+id/card_detail_view"
+	    layout="@layout/card_detail" />
+	
+	<include
+	    android:id="@+id/purchase_view"
+	    layout="@layout/purchase_view" />
+	
+<!-- 	<include
+	    android:id="@+id/purchase_view" 
+	    layout="@layout/purchase" />
+	
+	<include
+	    android:id="@+id/purchase_detail_view" 
+	    layout="@layout/purchase_detail" /> -->
 </ViewFlipper>

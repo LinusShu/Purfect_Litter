@@ -13,14 +13,16 @@ public class PurchasePhase implements AbstractPhase{
 		//FIND IT IN TOWN
 		
 		//MAKE SURE YOU CAN AFFORD
-		if (chosen.getDef().getCost() > wrapper.getGs().currentLove)
+		if (chosen.getDef().getCost() > wrapper.getGs().currentLove ||
+				wrapper.getGs().currentPurchase == 0)
 		{
 			return false;
 		}
 		
-		wrapper.getGs().currentLove-= chosen.getDef().getCost();
+		wrapper.getGs().currentLove -= chosen.getDef().getCost();
+		wrapper.getGs().currentPurchase--;
 		wrapper.getMe().take(wrapper.getGs().townRemove(chosen), Player.Pile.PLAYED);
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + " bought a " + chosen.getDef().getName() + "\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + " bought a " + chosen.getDef().getName() + "\n"+ wrapper.getGs().lastActions;
 		return true;
 		
 	}
@@ -35,7 +37,7 @@ public class PurchasePhase implements AbstractPhase{
 	@Override
 	public void nextPhase(GameLogic wrapper) {
 		
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + " ends his purchase phase\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + " ends his purchase phase\n"+ wrapper.getGs().lastActions;
 		wrapper.getGs().currentPhase = GameState.phase.END;
 		wrapper.setPhase(new EndPhase());
 	}

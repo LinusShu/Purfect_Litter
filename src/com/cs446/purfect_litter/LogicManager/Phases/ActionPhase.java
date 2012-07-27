@@ -38,7 +38,7 @@ public class ActionPhase implements AbstractPhase{
 		{
 			wrapper.getMe().move(Player.Pile.DECK, Player.Pile.HAND);
 		}
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + " plays " + catlook.getName() + "\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + " plays " + catlook.getName() + "\n" + wrapper.getGs().lastActions;
 		return true;
 	}
 
@@ -51,7 +51,7 @@ public class ActionPhase implements AbstractPhase{
 	@Override
 	public void nextPhase(GameLogic wrapper) {
 		
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + " ends his action phase\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + " ends his action phase\n"+ wrapper.getGs().lastActions;
 		wrapper.getGs().currentPhase = GameState.phase.CHAMBER;
 		wrapper.setPhase((AbstractPhase) new ChamberPhase());
 		

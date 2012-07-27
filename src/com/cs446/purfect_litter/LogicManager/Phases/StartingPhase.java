@@ -19,7 +19,7 @@ public class StartingPhase implements AbstractPhase {
 		wrapper.getGs().currentAction = 1;
 		wrapper.getGs().currentPurchase = 1;
 		wrapper.getGs().currentLove = 10;
-		wrapper.getGs().lastActions+= wrapper.getMe().getName() + "'s turn begins\n";
+		wrapper.getGs().lastActions= wrapper.getMe().getName() + "'s turn begins\n"+ wrapper.getGs().lastActions;
 		wrapper.getGs().currentPhase = GameState.phase.ACTION;
 		wrapper.setPhase(new ActionPhase());
 		

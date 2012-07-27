@@ -13,8 +13,10 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ExpandableListView;
 import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -34,7 +36,9 @@ public class MainActivity extends Activity {
 	private enum Screen {
 		START,
 		DASHBOARD,
-		DETAIL
+		DETAIL,
+		PURCHASE,
+		PURCHASE_DETAIL
 	}
 	
 	// Model ========================================================
@@ -43,29 +47,40 @@ public class MainActivity extends Activity {
 	
 	// should reside in model as get/set
 	Pile currentPile;
-	CardInstance currentCardInstance;
+	CardInstance currentDetailCardInstance;
+	CardInstance currentPurchaseCardInstance;
 	
 	// UI ===========================================================
 	
 	Screen currentScreen;
-	
+
+	ViewFlipper viewFlipper;
 	ProgressDialog waitForStartProgressDialog;
 	
-	ViewFlipper viewFlipper;
-	Gallery cardGallery;
-	ImageView cardDetailImageView;
-	Button cardDetailActionButton;
-	Button cardDetailBackButton;
+	TextView playerNameTextView;
+	TextView currentPhaseTextView;
+	TextView gameLogTextView;
 	TextView loveTextView;
 	TextView actionTextView;
 	TextView purchaseTextView;
-	TextView playerNameTextView;
-	TextView gameLogTextView;
-	TextView currentPhaseTextView;
+	Gallery cardGallery;
 	
-	String[] cardPilesStrings = {
-			"Hand", "Played", "Discard", "Chamber", "Deck"
-	};
+	ImageView cardDetailImageView;
+	Button cardDetailActionButton;
+	Button cardDetailBackButton;
+	
+	TabHost purchaseTabHost;
+	Gallery purchaseLoveGallery;
+	Gallery purchaseChiefGallery;
+	Gallery purchaseGeneralGallery;
+	
+	ExpandableListView purchaseExpandableListView;
+	TextView purchaseLoveTextView;
+	TextView purchasePurchaseTextView;
+	
+	ImageView purchaseDetailImageView;
+	Button purchaseDetailBuyButton;
+	Button purchaseDetailBackButton;
 	
 	Integer[][] cards = {
 			{
@@ -125,6 +140,7 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
 		case R.id.menu_next:
+			setScreen(Screen.DASHBOARD);
 			G.doNextPhase();
 			break;
 		case R.id.menu_quit:
@@ -138,86 +154,6 @@ public class MainActivity extends Activity {
     	}
     	return true;
 	}
-	
-	// ==============================================================
-    
-    private void setGallery(Pile p, int i) {
-    	currentPile = p;
-    	cardGallery.setAdapter(new ImageAdapter(this, G.getMyCardPile(p)));
-		Toast.makeText(getBaseContext(), 
-					"Viewing Cards in " + cardPilesStrings[i], 
-					Toast.LENGTH_SHORT).show();
-    }
-    
-    private void registerControllers() {
-        cardGallery.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
-				cardDetailImageView.setImageResource((Integer) arg0.getItemAtPosition(id));
-				currentCardInstance = G.getMyCard(currentPile, id);
-				viewFlipper.showNext();
-				currentScreen = Screen.DETAIL;
-			}
-        });
-    }
-	
-	// ==============================================================
-    
-    public void startAsHostHandler(View view) {
-    	G = new Game(this, SessionType.HOST);
-    	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Waiting for other players...", true);
-    }
-    
-    public void startAsClientHandler(View view) {
-    	G = new Game(this, SessionType.CLIENT);
-    	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Joining a game...", true);
-    }
-    
-    public void handHandler(View view) {
-    	if (G.isItMyTurn()) {
-    		cardDetailActionButton.setEnabled(true);
-    	}
-    	setGallery(Player.Pile.HAND, 0);
-    }
-    
-    public void playedHandler(View view) {
-    	if (G.isItMyTurn()) {
-    		cardDetailActionButton.setEnabled(false);
-    	}
-    	setGallery(Player.Pile.PLAYED, 1);
-    }
-    
-    public void discardHandler(View view) {
-    	if (G.isItMyTurn()) {
-    		cardDetailActionButton.setEnabled(false);
-    	}
-    	setGallery(Player.Pile.DISCARD, 2);
-    }
-    
-    public void chamberHandler(View view) {
-    	if (G.isItMyTurn()) {
-    		cardDetailActionButton.setEnabled(false);
-    	}
-    	setGallery(Player.Pile.CHAMBER, 3);
-    }
-    
-    public void deckHandler(View view) {
-    	if (G.isItMyTurn()) {
-    		cardDetailActionButton.setEnabled(false);
-    	}
-    	setGallery(Pile.DECK, 4);
-    }
-    
-    public void cardDetailCancelHandler(View view) {
-    	viewFlipper.showPrevious();
-    	currentScreen = Screen.DASHBOARD;
-    }
-    
-    public void cardDetailActionHandler(View view) {
-    	G.doPickCard(currentCardInstance);
-    	viewFlipper.showPrevious();
-    	currentScreen = Screen.DASHBOARD;
-    }
 	
 	// ==============================================================
 
@@ -236,13 +172,170 @@ public class MainActivity extends Activity {
     	playerNameTextView = (TextView) findViewById(R.id.player_name_text);
     	gameLogTextView = (TextView) findViewById(R.id.game_log_text);
     	currentPhaseTextView = (TextView) findViewById(R.id.current_phase_text);
+    	
+    	purchaseExpandableListView = (ExpandableListView) findViewById(R.id.purchase_expandable_list_view);
+    	purchaseLoveTextView = (TextView) findViewById(R.id.purchase_love_text);
+    	purchasePurchaseTextView = (TextView) findViewById(R.id.purchase_purchase_text);
+    	
+    	purchaseDetailImageView = (ImageView) findViewById(R.id.purchase_detail_image_view);
+    	purchaseDetailBuyButton = (Button) findViewById(R.id.purchase_buy_button);
+    	purchaseDetailBackButton = (Button) findViewById(R.id.purchase_back_button);
+
+    	purchaseTabHost = (TabHost) findViewById(R.id.purchase_view);
+    	purchaseTabHost.setup();
+    	
+    	TabHost.TabSpec loveTabSpec = purchaseTabHost.newTabSpec("love");
+    	loveTabSpec.setContent(R.id.loveTab);
+    	loveTabSpec.setIndicator("Love");
+    	purchaseTabHost.addTab(loveTabSpec);
+    	
+    	TabHost.TabSpec generalTabSpec = purchaseTabHost.newTabSpec("general");
+    	generalTabSpec.setContent(R.id.generalTab);
+    	generalTabSpec.setIndicator("General");
+    	purchaseTabHost.addTab(generalTabSpec);
+    	
+    	TabHost.TabSpec chiefTabSpec = purchaseTabHost.newTabSpec("chief");
+    	chiefTabSpec.setContent(R.id.chiefTab);
+    	chiefTabSpec.setIndicator("Chief");
+    	purchaseTabHost.addTab(chiefTabSpec);
+    	
+    	purchaseLoveGallery = (Gallery) findViewById(R.id.purchase_love_gallery);
+    	purchaseChiefGallery = (Gallery) findViewById(R.id.purchase_chief_gallery);
+    	purchaseGeneralGallery = (Gallery) findViewById(R.id.purchase_general_gallery);
+    }
+    
+    private void setScreen(Screen whichScreen) {
+    	switch (whichScreen) {
+		case DASHBOARD:
+			viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.dashboard_view)));
+			break;
+		case DETAIL:
+			viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.card_detail_view)));
+			break;
+		case PURCHASE:
+			viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.purchase_view)));
+			break;
+//		case PURCHASE_DETAIL:
+//			viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.purchase_detail_view)));
+//			break;
+		default:
+			break;
+		}
+    	currentScreen = whichScreen;
+    }
+    
+    private void setGallery(Gallery whichGallery, Pile p) {
+    	currentPile = p;
+    	whichGallery.setAdapter(new ImageAdapter(this, G.getMyCardPile(p)));
+    }
+    
+    private void setPurchaseGalleries() {
+//    	purchaseLoveGallery.setAdapter(new ImageAdapter(this, images));
+//		purchaseChiefGallery.setAdapter(new ImageAdapter(this, images));
+//		purchaseGeneralGallery.setAdapter(new ImageAdapter(this, images));
+    }
+    
+    private void registerControllers() {
+        cardGallery.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
+				cardDetailImageView.setImageResource((Integer) arg0.getItemAtPosition(id));
+				currentDetailCardInstance = G.getMyCard(currentPile, id);
+				setScreen(Screen.DETAIL);
+			}
+        });
     }
 
     private void startGame() {
     	waitForStartProgressDialog.dismiss();
-    	viewFlipper.showNext();
-    	currentScreen = Screen.DASHBOARD;
+    	setScreen(Screen.DASHBOARD);
     }
+	
+	// ==============================================================
+    
+    public void startAsHostHandler(View view) {
+    	G = new Game(this, SessionType.HOST);
+    	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Waiting for other players...", true);
+    }
+    
+    public void startAsClientHandler(View view) {
+    	G = new Game(this, SessionType.CLIENT);
+    	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Joining a game...", true);
+    }
+    
+    public void handHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(true);
+    	}
+    	setGallery(cardGallery, Player.Pile.HAND);
+		Toast.makeText(getBaseContext(), 
+				"Viewing Cards in Hand", 
+				Toast.LENGTH_SHORT).show();
+    }
+    
+    public void playedHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
+    	setGallery(cardGallery, Player.Pile.PLAYED);
+		Toast.makeText(getBaseContext(), 
+				"Viewing Cards in Played Pile", 
+				Toast.LENGTH_SHORT).show();
+    }
+    
+    public void discardHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
+    	setGallery(cardGallery, Player.Pile.DISCARD);
+		Toast.makeText(getBaseContext(), 
+				"Viewing Cards in Discard Pile", 
+				Toast.LENGTH_SHORT).show();
+    }
+    
+    public void chamberHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
+    	setGallery(cardGallery, Player.Pile.CHAMBER);
+		Toast.makeText(getBaseContext(), 
+				"Viewing Cards in Chamber", 
+				Toast.LENGTH_SHORT).show();
+    }
+    
+    public void deckHandler(View view) {
+    	if (G.isItMyTurn()) {
+    		cardDetailActionButton.setEnabled(false);
+    	}
+    	setGallery(cardGallery, Pile.DECK);
+		Toast.makeText(getBaseContext(), 
+				"Viewing Cards in Deck", 
+				Toast.LENGTH_SHORT).show();
+    }
+    
+    public void cardDetailCancelHandler(View view) {
+    	setScreen(Screen.DASHBOARD);
+    }
+    
+    public void cardDetailActionHandler(View view) {
+    	G.doPickCard(currentDetailCardInstance);
+    	setScreen(Screen.DASHBOARD);
+    }
+    
+//    public void purchaseDoneHandler(View view) {
+//    	setScreen(Screen.DASHBOARD);	// return to dashboard
+//		G.doNextPhase();
+//    }
+    
+//    public void purchaseDetailBuyHandler(View view) {
+//    	
+//    }
+    
+//    public void purchaseDetailBackHandler(View view) {
+//    	setScreen(Screen.PURCHASE);
+//    }
+	
+	// ==============================================================
     
     public void update() {
     	runOnUiThread(new Runnable() {
@@ -261,6 +354,16 @@ public class MainActivity extends Activity {
 	                	purchaseTextView.setText("Purchase: " + G.getGameState().currentPurchase);
 	                	
 	            		cardDetailActionButton.setEnabled(true);
+	            		
+	            		setPurchaseGalleries();
+	            		
+	            		switch (G.getGameState().currentPhase) {
+	            		case PURCHASE:
+	            			setScreen(Screen.PURCHASE);
+	            			break;
+	            		default:
+	            			break;
+	            		}
 	            	}
 	            	// NOT MY TURN
 	            	else {
@@ -273,10 +376,8 @@ public class MainActivity extends Activity {
 	            	}
 	            	
 	            	playerNameTextView.setText("Hello, " + G.getMyName());
-	            	setGallery(Player.Pile.HAND, 0);
-	            	
-//	            	String gameLog = (String) gameLogTextView.getText();
 	            	gameLogTextView.setText(G.getGameState().pullLastActions());
+	            	setGallery(cardGallery, Player.Pile.HAND);
 	            	
 	            	break;
 				default: 		// ----------------------------------
