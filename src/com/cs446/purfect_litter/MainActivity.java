@@ -1,9 +1,8 @@
 package com.cs446.purfect_litter;
 
 import android.app.Activity;
-import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.view.Menu;
@@ -32,6 +31,12 @@ public class MainActivity extends Activity {
 		CLIENT
 	}
 	
+	private enum Screen {
+		START,
+		DASHBOARD,
+		DETAIL
+	}
+	
 	// Model ========================================================
 	
 	Game G;
@@ -42,11 +47,15 @@ public class MainActivity extends Activity {
 	
 	// UI ===========================================================
 	
+	Screen currentScreen;
+	
+	ProgressDialog waitForStartProgressDialog;
+	
 	ViewFlipper viewFlipper;
 	Gallery cardGallery;
 	ImageView cardDetailImageView;
 	Button cardDetailActionButton;
-	Button cardDetailCancelButton;
+	Button cardDetailBackButton;
 	TextView loveTextView;
 	TextView actionTextView;
 	TextView purchaseTextView;
@@ -97,7 +106,6 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         initUIComponents();
         registerControllers();
-        startGameDialog();
     }
 
     @Override
@@ -133,17 +141,6 @@ public class MainActivity extends Activity {
 	
 	// ==============================================================
     
-    private void initModel(int selection) {
-        switch (selection) {
-        case 0:
-        	G = new Game(this, SessionType.HOST);
-        	break;
-        case 1:
-        	G = new Game(this, SessionType.CLIENT);
-        	break;
-        }
-    }
-    
     private void setGallery(Pile p, int i) {
     	currentPile = p;
     	cardGallery.setAdapter(new ImageAdapter(this, G.getMyCardPile(p)));
@@ -159,11 +156,22 @@ public class MainActivity extends Activity {
 				cardDetailImageView.setImageResource((Integer) arg0.getItemAtPosition(id));
 				currentCardInstance = G.getMyCard(currentPile, id);
 				viewFlipper.showNext();
+				currentScreen = Screen.DETAIL;
 			}
         });
     }
 	
 	// ==============================================================
+    
+    public void startAsHostHandler(View view) {
+    	G = new Game(this, SessionType.HOST);
+    	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Waiting for other players...", true);
+    }
+    
+    public void startAsClientHandler(View view) {
+    	G = new Game(this, SessionType.CLIENT);
+    	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Joining a game...", true);
+    }
     
     public void handHandler(View view) {
     	if (G.isItMyTurn()) {
@@ -200,27 +208,27 @@ public class MainActivity extends Activity {
     	setGallery(Pile.DECK, 4);
     }
     
-    public void startGameHandler(View view) {
-    	viewFlipper.showNext();
-    }
-    
     public void cardDetailCancelHandler(View view) {
     	viewFlipper.showPrevious();
+    	currentScreen = Screen.DASHBOARD;
     }
     
     public void cardDetailActionHandler(View view) {
     	G.doPickCard(currentCardInstance);
     	viewFlipper.showPrevious();
+    	currentScreen = Screen.DASHBOARD;
     }
 	
 	// ==============================================================
 
     private void initUIComponents() {
+    	currentScreen = Screen.START;
+    	
     	viewFlipper = (ViewFlipper) findViewById(R.id.mainViewFlipper);
     	cardGallery = (Gallery) findViewById(R.id.mainCardGallery);
     	cardDetailImageView = (ImageView) findViewById(R.id.mainCardDetailImageView);
     	cardDetailActionButton = (Button) findViewById(R.id.detail_action_button);
-    	cardDetailCancelButton = (Button) findViewById(R.id.mainCardDetailCancelButton);
+    	cardDetailBackButton = (Button) findViewById(R.id.detail_back_button);
     	
     	loveTextView = (TextView) findViewById(R.id.love_text);
     	actionTextView = (TextView) findViewById(R.id.action_text);
@@ -230,53 +238,53 @@ public class MainActivity extends Activity {
     	currentPhaseTextView = (TextView) findViewById(R.id.current_phase_text);
     }
 
+    private void startGame() {
+    	waitForStartProgressDialog.dismiss();
+    	viewFlipper.showNext();
+    	currentScreen = Screen.DASHBOARD;
+    }
+    
     public void update() {
     	runOnUiThread(new Runnable() {
             @Override
         	public void run() {
-            	// MY TURN
-            	if (G.isItMyTurn()) {
-            		currentPhaseTextView.setText("Current Phase: " + G.getCurrentPhase());
-                	loveTextView.setText("Love: " + G.getGameState().currentLove);
-                	actionTextView.setText("Action: " + G.getGameState().currentAction);
-                	purchaseTextView.setText("Purchase: " + G.getGameState().currentPurchase);
-                	
-            		cardDetailActionButton.setEnabled(true);
-            	}
-            	// NOT MY TURN
-            	else {
-            		currentPhaseTextView.setText("Current Phase: Not Your Turn");
-                	loveTextView.setText("");
-                	actionTextView.setText("");
-                	purchaseTextView.setText("");
-                	
-            		cardDetailActionButton.setEnabled(false);
-            	}
-            	
-            	playerNameTextView.setText("Hello, " + G.getMyName());
-            	setGallery(Player.Pile.HAND, 0);
-            	
-//            	String gameLog = (String) gameLogTextView.getText();
-            	gameLogTextView.setText(G.getGameState().pullLastActions());
+            	switch (currentScreen) {
+				case START: 	// ----------------------------------
+					startGame();
+					// cascade
+				case DASHBOARD: // ----------------------------------
+	            	// MY TURN
+	            	if (G.isItMyTurn()) {
+	            		currentPhaseTextView.setText("Current Phase: " + G.getCurrentPhase());
+	                	loveTextView.setText("Love: " + G.getGameState().currentLove);
+	                	actionTextView.setText("Action: " + G.getGameState().currentAction);
+	                	purchaseTextView.setText("Purchase: " + G.getGameState().currentPurchase);
+	                	
+	            		cardDetailActionButton.setEnabled(true);
+	            	}
+	            	// NOT MY TURN
+	            	else {
+	            		currentPhaseTextView.setText("Current Phase: Not Your Turn");
+	                	loveTextView.setText("");
+	                	actionTextView.setText("");
+	                	purchaseTextView.setText("");
+	                	
+	            		cardDetailActionButton.setEnabled(false);
+	            	}
+	            	
+	            	playerNameTextView.setText("Hello, " + G.getMyName());
+	            	setGallery(Player.Pile.HAND, 0);
+	            	
+//	            	String gameLog = (String) gameLogTextView.getText();
+	            	gameLogTextView.setText(G.getGameState().pullLastActions());
+	            	
+	            	break;
+				default: 		// ----------------------------------
+					break;
+				}
+
             }
     	});
-    }
-    
-    private void startGameDialog() {
-		final CharSequence[] gameModeItems = { "Host", "Client" };
-		
-    	// Dialog boxes associated with GameSessionManager
-    	// dialog box to select a game mode
-    	AlertDialog.Builder selectMode = new AlertDialog.Builder(this);
-    	selectMode.setTitle("Welcome to Purfect Litter! \nStart game as: ");
-    	selectMode.setItems(gameModeItems, new DialogInterface.OnClickListener() {
-    	    public void onClick(DialogInterface dialog, int selection) {
-    	        initModel(selection);
-    	        viewFlipper.showNext();
-    	    }
-    	});
-    	AlertDialog alert = selectMode.create();
-    	alert.show();
     }
 	
 	// ==============================================================

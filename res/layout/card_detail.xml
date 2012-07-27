@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:weightSum="1.0"
+    android1:background="@drawable/bg"
     android1:padding="10dp" >
 
 	<ImageView
@@ -23,7 +24,7 @@
 	    android1:text="Select" />
 
 	<Button
-	    android1:id="@+id/mainCardDetailCancelButton"
+	    android1:id="@+id/detail_back_button"
 	    android1:layout_width="match_parent"
 	    android1:layout_height="wrap_content"
 	    android1:onClick="cardDetailCancelHandler"

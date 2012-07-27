@@ -1,14 +1,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:background="@drawable/bg"
+    android:orientation="vertical"
+    android:padding="10dp" >
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="260dp"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:paddingBottom="5dp">
 
         <TextView
             android:id="@+id/player_name_text"
@@ -31,39 +33,33 @@
             android:text="Game Log:"
             android:textAppearance="?android:attr/textAppearanceMedium" />
        
-       <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-           android:layout_height="150dp" 
-           android:layout_width="match_parent">
-           
-           <LinearLayout
-               android:id="@+id/game_log_listting"
+       <ScrollView
+           xmlns:android="http://schemas.android.com/apk/res/android"
+           android:layout_width="match_parent"
+           android:layout_height="125dp"
+           android:layout_marginTop="10dp"
+           android:layout_marginBottom="10dp" >
+         
+           <TextView
+               android:id="@+id/game_log_text"
                android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical"
-               android:padding="10dp">
-               <TextView
-                   android:id="@+id/game_log_text"
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content" />
-           </LinearLayout>
+               android:layout_height="wrap_content" />
+
         </ScrollView>
+
+	    <Button
+	        android:id="@+id/deck_button"
+	        style="?android:attr/buttonStyleSmall"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:onClick="deckHandler"
+	        android:text="DECK" />
 
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp" >
-
-        <Button
-            android:id="@+id/deck_button"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:onClick="deckHandler"
-            android:text="DECK" />
+        android:layout_height="30dp" >
 
         <Button
             android:id="@+id/hand_button"
@@ -107,13 +103,11 @@
         android:id="@+id/mainCardGallery"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="25dp"
+        android:layout_height="20dp"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp" >
 
