@@ -39,7 +39,13 @@ public class GameState extends Object implements Serializable {
 	    }
 	}
 	
-	public ArrayList<ArrayList<CardInstance>> townCards;
+	static public enum TownPile {
+	    LOVE(0), CHIEF(1), GENERAL(2);
+	    public int index;
+	    TownPile(int in){index = in;}
+	}
+	
+	public ArrayList<ArrayList<ArrayList<CardInstance>>> townCards;
 	public ArrayList<Player> players;
 	public Player currentPlayer;
 	public phase currentPhase;
@@ -51,50 +57,80 @@ public class GameState extends Object implements Serializable {
 	
 	public GameState()
 	{
-		townCards = new ArrayList<ArrayList<CardInstance>>();
+		townCards = new ArrayList<ArrayList<ArrayList<CardInstance>>>();//create super container
+		for (int i=0;i<TownPile.values().length;i++)
+		{
+			townCards.add(new ArrayList<ArrayList<CardInstance>>());//create card type container
+		}
 		players = new ArrayList<Player>();
 		lastActions = "";
 	}
-	
+	/**
+	 * For use when changing turns
+	 * chooses the next player in sequence of the players array
+	 */
 	public void setNextPlayer()
 	{
-		int index = players.indexOf(currentPlayer);
-		currentPlayer = players.get((index + 1) % players.size());
+		int index = players.indexOf(currentPlayer);//find current player's index in players
+		currentPlayer = players.get((index + 1) % players.size());//set the current player to the next player index
 	}
 	
+	/**
+	 * For use when checking if the game met ending conditions
+	 * counts how many card definition piles are empty
+	 * @return true if the game is over, false otherwise
+	 */
 	boolean gameOver()
 	{
 		int x = 0;
-		for (int i=0; i<townCards.size();i++)
+		for (int i=0; i<townCards.size();i++)//for each card type
 		{
-			if (townCards.get(i).size() == 0)
+			for (int j=0; j<townCards.get(i).size();j++)//for each card definition
 			{
-				x++;
+				if (townCards.get(i).get(j).size() == 0)//are we out of card instances to sell
+				{
+					x++;
+				}
 			}
 		}
-		if (x>=2) { return true;}
-		return false;
+		if (x>=2) { return true;}// were there 2 or more empty piles? game is over
+		return false;//otherwise the game is not over
 	}
 	
+	/**
+	 * for use when trying to find a victor
+	 * sets the victory points field in each player
+	 */
 	void findVictor()
 	{
-		for (int i=0; i<players.size(); i++)
+		for (int i=0; i<players.size(); i++)//for each player
 		{
-			players.get(i).calculateVP();
+			players.get(i).calculateVP();//count his points
 		}
 	}
 	
+	/**
+	 * For use when purchasing a card from the town
+	 * looks through every single card in the town until it find one that matches the definition of chosen
+	 * removes it from the townCards
+	 * returns the instance it removed
+	 * @param chosen: the card whose definition wants one instance removed from town
+	 * @return the instance that was removed
+	 */
 	public CardInstance townRemove(CardInstance chosen)
 	{
 		CardDef compare = chosen.getDef();
-		for (int i=0;i<townCards.size(); i++)
+		for (int i=0;i<townCards.size(); i++)//for every card type
 		{
-			if (townCards.get(i).size()>0 && townCards.get(i).get(0).getDef() == compare)
+			for (int j=0;j<townCards.get(i).size();j++)//for every definition of that type
 			{
-				return townCards.get(i).remove(0);
+				if (townCards.get(i).get(j).size()>0 && townCards.get(i).get(j).get(0).getDef() == compare) //if theres at least one in the pile, and the def matches
+				{
+					return townCards.get(i).get(j).remove(0);//get rid of it and return it
+				}
 			}
 		}
-		//THROW ERROR
+		//THROW ERROR, because the card wasnt found
 		return null;
 	}
 
@@ -111,17 +147,22 @@ public class GameState extends Object implements Serializable {
 		return rv;
 	}
 	
-	public int[] getImageArray() {
-		int[] rv = new int[townCards.size()];
-		for (int i=0;i<townCards.size();i++)
+	/**
+	 * for ui convenience to get the correct image arrays
+	 * @param p the type of card they want definitions of
+	 * @return an array of image indices for R
+	 */
+	public Integer[] getImageArray(TownPile p) {
+		Integer[] rv = new Integer[townCards.get(p.index).size()];
+		for (int i=0;i<townCards.get(p.index).size();i++)////for every definition of card type p
 		{
-			if (townCards.get(i).size() == 0)
+			if (townCards.get(p.index).get(i).size() == 0)//is this pile empty?
 			{
-				rv[i]= R.drawable.card_blank;
+				rv[i]= R.drawable.card_blank;//this pile is empty, so we dont know what used to be in it
 			}
 			else
 			{
-				rv[i]=townCards.get(i).get(0).getDef().getImage();	
+				rv[i]=townCards.get(p.index).get(i).get(0).getDef().getImage();//return the image index of the first card in this pile (all definitions are the same in this pile)	
 			}
 		}
 		return rv;

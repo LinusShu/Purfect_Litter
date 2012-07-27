@@ -2,21 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="10dp" >
     
     <Gallery
         android:id="@+id/purchase_chief_gallery"
         android:layout_width="match_parent"
         android:layout_height="170dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp" />
-
+        android:layout_weight="1" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/buy_chief_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Buy Chief Cats" />
+        android:onClick="buyHandler"
+        android:text="Buy Chief Cat" />
 
 </LinearLayout>

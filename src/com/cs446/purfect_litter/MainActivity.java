@@ -17,11 +17,14 @@ import android.widget.ExpandableListView;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.cs446.purfect_litter.LogicManager.Game;
+import com.cs446.purfect_litter.LogicManager.GameLogic;
+import com.cs446.purfect_litter.LogicManager.GameState.TownPile;
 import com.cs446.purfect_litter.LogicManager.Player;
 import com.cs446.purfect_litter.LogicManager.Player.Pile;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
@@ -73,14 +76,17 @@ public class MainActivity extends Activity {
 	Gallery purchaseLoveGallery;
 	Gallery purchaseChiefGallery;
 	Gallery purchaseGeneralGallery;
+	Button purchaseLoveButton;
+	Button purchaseChiefButton;
+	Button purchaseGeneralButton;
 	
 	ExpandableListView purchaseExpandableListView;
-	TextView purchaseLoveTextView;
-	TextView purchasePurchaseTextView;
 	
 	ImageView purchaseDetailImageView;
 	Button purchaseDetailBuyButton;
 	Button purchaseDetailBackButton;
+	TextView purchaseLoveTextView;
+	TextView purchasePurchaseTextView;
 	
 	Integer[][] cards = {
 			{
@@ -120,7 +126,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         initUIComponents();
-        registerControllers();
+        registerListeners();
     }
 
     @Override
@@ -173,13 +179,17 @@ public class MainActivity extends Activity {
     	gameLogTextView = (TextView) findViewById(R.id.game_log_text);
     	currentPhaseTextView = (TextView) findViewById(R.id.current_phase_text);
     	
-    	purchaseExpandableListView = (ExpandableListView) findViewById(R.id.purchase_expandable_list_view);
+//    	purchaseExpandableListView = (ExpandableListView) findViewById(R.id.purchase_expandable_list_view);
     	purchaseLoveTextView = (TextView) findViewById(R.id.purchase_love_text);
     	purchasePurchaseTextView = (TextView) findViewById(R.id.purchase_purchase_text);
     	
-    	purchaseDetailImageView = (ImageView) findViewById(R.id.purchase_detail_image_view);
-    	purchaseDetailBuyButton = (Button) findViewById(R.id.purchase_buy_button);
-    	purchaseDetailBackButton = (Button) findViewById(R.id.purchase_back_button);
+//    	purchaseDetailImageView = (ImageView) findViewById(R.id.purchase_detail_image_view);
+//    	purchaseDetailBuyButton = (Button) findViewById(R.id.purchase_buy_button);
+//    	purchaseDetailBackButton = (Button) findViewById(R.id.purchase_back_button);
+    	
+    	purchaseLoveButton = (Button) findViewById(R.id.buy_love_button);
+    	purchaseChiefButton = (Button) findViewById(R.id.buy_chief_button);
+    	purchaseGeneralButton = (Button) findViewById(R.id.buy_general_button);
 
     	purchaseTabHost = (TabHost) findViewById(R.id.purchase_view);
     	purchaseTabHost.setup();
@@ -230,12 +240,12 @@ public class MainActivity extends Activity {
     }
     
     private void setPurchaseGalleries() {
-//    	purchaseLoveGallery.setAdapter(new ImageAdapter(this, images));
-//		purchaseChiefGallery.setAdapter(new ImageAdapter(this, images));
-//		purchaseGeneralGallery.setAdapter(new ImageAdapter(this, images));
+    	purchaseLoveGallery.setAdapter(new ImageAdapter(this, G.getTownCardPile(TownPile.LOVE)));
+		purchaseChiefGallery.setAdapter(new ImageAdapter(this, G.getTownCardPile(TownPile.CHIEF)));
+		purchaseGeneralGallery.setAdapter(new ImageAdapter(this, G.getTownCardPile(TownPile.GENERAL)));
     }
     
-    private void registerControllers() {
+    private void registerListeners() {
         cardGallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
@@ -244,6 +254,38 @@ public class MainActivity extends Activity {
 				setScreen(Screen.DETAIL);
 			}
         });
+        purchaseLoveGallery.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
+				currentPurchaseCardInstance = G.getTownCard(TownPile.LOVE, id);
+			}
+        });
+        purchaseChiefGallery.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
+				currentPurchaseCardInstance = G.getTownCard(TownPile.CHIEF, id);
+			}
+        });
+        purchaseGeneralGallery.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
+				currentPurchaseCardInstance = G.getTownCard(TownPile.GENERAL, id);
+			}
+        });
+        purchaseTabHost.setOnTabChangedListener(new OnTabChangeListener() {
+			@Override
+			public void onTabChanged(String tabId) {
+				if (tabId.equals("love")) {
+					currentPurchaseCardInstance = G.getTownCard(TownPile.LOVE, 0);	// 1 love
+				}
+				else if (tabId.equals("general")) {
+					currentPurchaseCardInstance = G.getTownCard(TownPile.GENERAL, 0);	// first general
+				}
+				else if (tabId.equals("chief")) {
+					currentPurchaseCardInstance = G.getTownCard(TownPile.CHIEF, 0);	// first chief
+				}
+			}
+		});
     }
 
     private void startGame() {
@@ -322,6 +364,28 @@ public class MainActivity extends Activity {
     	setScreen(Screen.DASHBOARD);
     }
     
+    public void buyHandler(View view) {
+    	if (currentPurchaseCardInstance == null) {
+    		Toast.makeText(getBaseContext(), 
+    				"Please select a card.", 
+    				Toast.LENGTH_SHORT).show();
+    		return;
+    	}
+    	CardInstance purchaseAttempt = currentPurchaseCardInstance;
+    	// Purchase successful
+    	if (G.doPickCard(currentPurchaseCardInstance)) {
+    		Toast.makeText(getBaseContext(), 
+    				purchaseAttempt.getDef().getName() + " bought successfuly.", 
+    				Toast.LENGTH_SHORT).show();
+    	}
+    	// Purchase unsuccessful
+    	else {
+    		Toast.makeText(getBaseContext(), 
+    				purchaseAttempt.getDef().getName() + " could not be bought.", 
+    				Toast.LENGTH_SHORT).show();
+    	}
+    }
+    
 //    public void purchaseDoneHandler(View view) {
 //    	setScreen(Screen.DASHBOARD);	// return to dashboard
 //		G.doNextPhase();
@@ -356,6 +420,9 @@ public class MainActivity extends Activity {
 	            		cardDetailActionButton.setEnabled(true);
 	            		
 	            		setPurchaseGalleries();
+	            		currentPurchaseCardInstance = G.getTownCard(TownPile.LOVE, 0);	// 1 love
+	            		purchaseLoveTextView.setText("Love Points Available: " + G.getGameState().currentLove);
+	                	purchasePurchaseTextView.setText("Purchase Points Available: " + G.getGameState().currentPurchase);
 	            		
 	            		switch (G.getGameState().currentPhase) {
 	            		case PURCHASE:
@@ -380,6 +447,12 @@ public class MainActivity extends Activity {
 	            	setGallery(cardGallery, Player.Pile.HAND);
 	            	
 	            	break;
+				case PURCHASE: 	// ----------------------------------
+            		setPurchaseGalleries();
+            		currentPurchaseCardInstance = G.getTownCard(TownPile.LOVE, 0);	// 1 love
+            		purchaseLoveTextView.setText("Love Points Available: " + G.getGameState().currentLove);
+                	purchasePurchaseTextView.setText("Purchase Points Available: " + G.getGameState().currentPurchase);
+                	break;
 				default: 		// ----------------------------------
 					break;
 				}

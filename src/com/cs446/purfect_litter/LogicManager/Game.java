@@ -2,10 +2,13 @@ package com.cs446.purfect_litter.LogicManager;
 
 import java.util.ArrayList;
 
+import android.R.integer;
+
 import com.cs446.purfect_litter.MainActivity;
 import com.cs446.purfect_litter.MainActivity.SessionType;
 import com.cs446.purfect_litter.LogicManager.Player.Pile;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
+import com.cs446.purfect_litter.LogicManager.GameState.TownPile;
 import com.cs446.purfect_litter.SessionManager.ClientManager;
 import com.cs446.purfect_litter.SessionManager.GameSessionManager;
 import com.cs446.purfect_litter.SessionManager.ServerManager;
@@ -69,9 +72,10 @@ public class Game {
 		doSendGameState(gameLogic.getGs());
 	}
 	
-	public void doPickCard(CardInstance whichCard) {
-		gameLogic.getPhase().pickCard(whichCard, gameLogic);
+	public boolean doPickCard(CardInstance whichCard) {
+		boolean result = gameLogic.getPhase().pickCard(whichCard, gameLogic);
     	gameUI.update();
+    	return result;
 	}
 
 	// GETTERS ======================================================
@@ -92,6 +96,19 @@ public class Game {
 		return gameLogic.getMe().piles.get(whichPile.index).get(index);
 	}
 	
+	public Integer[] getTownCardPile(TownPile whichPile) {
+		return gameLogic.getGs().getImageArray(whichPile);
+	}
+	
+	public CardInstance getTownCard(TownPile whichPile, int index) {
+		if (gameLogic.getGs().townCards.get(whichPile.index).get(index).size() > 0) {
+			return gameLogic.getGs().townCards.get(whichPile.index).get(index).get(0);
+		}
+		else {
+			return null;
+		}
+	}
+
 	public String getCurrentPhase() {
 		return gameLogic.getGs().currentPhase.getName();
 	}

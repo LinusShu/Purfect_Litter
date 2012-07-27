@@ -12,6 +12,10 @@ public class PurchasePhase implements AbstractPhase{
 		
 		//FIND IT IN TOWN
 		
+		if (chosen == null) {
+			return false;
+		}
+		
 		//MAKE SURE YOU CAN AFFORD
 		if (chosen.getDef().getCost() > wrapper.getGs().currentLove ||
 				wrapper.getGs().currentPurchase == 0)
