@@ -1,4 +1,4 @@
-package com.cs446.purfect_litter.gameLogicManager.cardManager;
+package com.cs446.purfect_litter.LogicManager.CardManager;
 
 public class EventCard extends CardDef {
 	private int vp;

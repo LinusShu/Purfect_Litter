@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,21 +20,24 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import com.cs446.purfect_litter.gameLogicManager.GameState;
-import com.cs446.purfect_litter.gameLogicManager.Player;
-import com.cs446.purfect_litter.gameLogicManager.Player.pile;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
-import com.cs446.purfect_litter.gameSessionManager.ClientManager;
-import com.cs446.purfect_litter.gameSessionManager.GameSessionManager;
-import com.cs446.purfect_litter.gameSessionManager.ServerManager;
+import com.cs446.purfect_litter.LogicManager.Game;
+import com.cs446.purfect_litter.LogicManager.Player;
+import com.cs446.purfect_litter.LogicManager.Player.Pile;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
 
 public class MainActivity extends Activity {
 	
+	public enum SessionType {
+		HOST,
+		CLIENT
+	}
+	
 	// Model ========================================================
 	
-	GameSessionManager gSManager;
-	GameState gameState;
-	pile currentPile;
+	Game G;
+	
+	// should reside in model as get/set
+	Pile currentPile;
 	CardInstance currentCardInstance;
 	
 	// UI ===========================================================
@@ -53,7 +55,7 @@ public class MainActivity extends Activity {
 	TextView currentPhaseTextView;
 	
 	String[] cardPilesStrings = {
-			"Hand", "Played", "Discard", "Chamber"
+			"Hand", "Played", "Discard", "Chamber", "Deck"
 	};
 	
 	Integer[][] cards = {
@@ -108,8 +110,7 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
 		case R.id.menu_next:
-			gSManager.getGl().currentPhase.nextPhase(gSManager.getGl());
-			update(gameState);
+			G.doNextPhase();
 			break;
 		case R.id.menu_quit:
 			try {
@@ -124,8 +125,75 @@ public class MainActivity extends Activity {
 	}
 	
 	// ==============================================================
+    
+    private void initModel(int selection) {
+        switch (selection) {
+        case 0:
+        	G = new Game(this, SessionType.HOST);
+        	break;
+        case 1:
+        	G = new Game(this, SessionType.CLIENT);
+        	break;
+        }
+    }
+    
+    private void setGallery(Pile p, int i) {
+    	currentPile = p;
+    	cardGallery.setAdapter(new ImageAdapter(this, G.getMyCardPile(p)));
+		Toast.makeText(getBaseContext(), 
+					"Viewing Cards in " + cardPilesStrings[i], 
+					Toast.LENGTH_SHORT).show();
+    }
+    
+    private void registerControllers() {
+        cardGallery.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
+				cardDetailImageView.setImageResource((Integer) arg0.getItemAtPosition(id));
+				currentCardInstance = G.getMyCard(currentPile, id);
+				viewFlipper.showNext();
+			}
+        });
+    }
+	
+	// ==============================================================
+    
+    public void handHandler(View view) {
+    	setGallery(Player.Pile.HAND, 0);
+    }
+    
+    public void playedHandler(View view) {
+    	setGallery(Player.Pile.PLAYED, 1);
+    }
+    
+    public void discardHandler(View view) {
+    	setGallery(Player.Pile.DISCARD, 2);
+    }
+    
+    public void chamberHandler(View view) {
+    	setGallery(Player.Pile.CHAMBER, 3);
+    }
+    
+    public void deckHandler(View view) {
+    	setGallery(Pile.DECK, 4);
+    }
+    
+    public void startGameHandler(View view) {
+    	viewFlipper.showNext();
+    }
+    
+    public void cardDetailCancelHandler(View view) {
+    	viewFlipper.showPrevious();
+    }
+    
+    public void cardDetailActionHandler(View view) {
+    	G.doPickCard(currentCardInstance);
+    	viewFlipper.showPrevious();
+    }
+	
+	// ==============================================================
 
-    public void initUIComponents() {
+    private void initUIComponents() {
     	viewFlipper = (ViewFlipper) findViewById(R.id.mainViewFlipper);
     	cardGallery = (Gallery) findViewById(R.id.mainCardGallery);
     	cardDetailImageView = (ImageView) findViewById(R.id.mainCardDetailImageView);
@@ -140,33 +208,31 @@ public class MainActivity extends Activity {
     	currentPhaseTextView = (TextView) findViewById(R.id.current_phase_text);
     }
 
-    public void update(GameState gState) {
-    	Log.d("MainActivity update", gState.lastActions);
-    	this.gameState = gState;
+    public void update() {
     	runOnUiThread(new Runnable() {
             @Override
         	public void run() {
             	// MY TURN
-            	if (gameState.currentPlayer.equals(gSManager.getMe())) {
-            		currentPhaseTextView.setText("Current Phase: " + gameState.currentPhase.name);
+            	if (G.isItMyTurn()) {
+            		currentPhaseTextView.setText("Current Phase: " + G.getCurrentPhase());
+                	loveTextView.setText("Love: " + G.getGameState().currentLove);
+                	actionTextView.setText("Action: " + G.getGameState().currentAction);
+                	purchaseTextView.setText("Purchase: " + G.getGameState().currentPurchase);
             	}
             	// NOT MY TURN
             	else {
             		currentPhaseTextView.setText("Current Phase: Not Your Turn");
             	}
-            	loveTextView.setText("Love: " + gameState.currentLove);
-            	actionTextView.setText("Action: " + gameState.currentAction);
-            	purchaseTextView.setText("Purchase: " + gameState.currentPurchase);
-            	playerNameTextView.setText("Hello, " + gSManager.getMe().getName());
-            	setGallery(Player.pile.HAND, 0);
+            	playerNameTextView.setText("Hello, " + G.getMyName());
+            	setGallery(Player.Pile.HAND, 0);
             	
             	String gameLog = (String) gameLogTextView.getText();
-            	gameLogTextView.setText(gameLog + gameState.pullLastActions());
+            	gameLogTextView.setText(G.getGameState().pullLastActions() + gameLog);
             }
     	});
     }
     
-    public void startGameDialog() {
+    private void startGameDialog() {
 		final CharSequence[] gameModeItems = { "Host", "Client" };
 		
     	// Dialog boxes associated with GameSessionManager
@@ -181,70 +247,6 @@ public class MainActivity extends Activity {
     	});
     	AlertDialog alert = selectMode.create();
     	alert.show();
-    }
-	
-	// ==============================================================
-    
-    public void initModel(int selection) {
-        switch (selection) {
-        case 0:
-        	gSManager = new ServerManager(this);
-        	break;
-        case 1:
-        	gSManager = new ClientManager(this);
-        	break;
-        }
-    }
-    
-    public void registerControllers() {
-        cardGallery.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> arg0, View v, int id, long arg3) {
-				cardDetailImageView.setImageResource((Integer) arg0.getItemAtPosition(id));
-				currentCardInstance = gSManager.getMe().piles.get(currentPile.index).get(id);
-				viewFlipper.showNext();
-			}
-        });
-    }
-	
-	// ==============================================================
-    
-    private void setGallery(pile p, int i) {
-    	currentPile = p;
-    	cardGallery.setAdapter(new ImageAdapter(this, gSManager.getMe().getImageArray(p)));
-		Toast.makeText(getBaseContext(), 
-					"Viewing Cards in " + cardPilesStrings[i], 
-					Toast.LENGTH_SHORT).show();
-    }
-    
-    public void handHandler(View view) {
-    	setGallery(Player.pile.HAND, 0);
-    }
-    
-    public void playedHandler(View view) {
-    	setGallery(Player.pile.PLAYED, 1);
-    }
-    
-    public void discardHandler(View view) {
-    	setGallery(Player.pile.DISCARD, 2);
-    }
-    
-    public void chamberHandler(View view) {
-    	setGallery(Player.pile.CHAMBER, 3);
-    }
-    
-    public void startGameHandler(View view) {
-    	viewFlipper.showNext();
-    }
-    
-    public void cardDetailCancelHandler(View view) {
-    	viewFlipper.showPrevious();
-    }
-    
-    public void cardDetailActionHandler(View view) {
-    	gSManager.getGl().currentPhase.pickCard(currentCardInstance, gSManager.getGl());
-    	update(gameState);
-    	viewFlipper.showPrevious();
     }
 	
 	// ==============================================================

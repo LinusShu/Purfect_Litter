@@ -1,4 +1,4 @@
-package com.cs446.purfect_litter.gameSessionManager;
+package com.cs446.purfect_litter.SessionManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,8 +7,7 @@ import java.net.Socket;
 
 import android.os.AsyncTask;
 
-import com.cs446.purfect_litter.gameLogicManager.GameLogic;
-import com.cs446.purfect_litter.gameLogicManager.GameState;
+import com.cs446.purfect_litter.LogicManager.GameState;
 
 public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 	GameState fromServer;
@@ -50,8 +49,8 @@ public class ClientCommsTask extends AsyncTask<GameSessionManager, Void, Void>{
 					gsm.id = fromServer.getID();
 					String playername = gsm.id + "";
 					initialized = true;
-					gsm.gl = new GameLogic(fromServer, playername, gsm);
-					gsm.receive(fromServer);
+					gsm.getGame().createLogicForClient(fromServer, playername);
+					gsm.getGame().receiveGameState(fromServer);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();

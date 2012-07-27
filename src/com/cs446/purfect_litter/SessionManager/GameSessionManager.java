@@ -1,8 +1,6 @@
-package com.cs446.purfect_litter.gameSessionManager;
+package com.cs446.purfect_litter.SessionManager;
 
-import com.cs446.purfect_litter.gameLogicManager.GameLogic;
-import com.cs446.purfect_litter.gameLogicManager.GameState;
-import com.cs446.purfect_litter.gameLogicManager.Player;
+import com.cs446.purfect_litter.LogicManager.GameState;
 
 
 
@@ -19,8 +17,4 @@ public abstract class GameSessionManager {
 	//used to tear down connection and kill application processes when network error occurs
 	public abstract void shutDown();
 	
-	public abstract Player getMe();
-	
-	public abstract GameLogic getGl();
-
 }

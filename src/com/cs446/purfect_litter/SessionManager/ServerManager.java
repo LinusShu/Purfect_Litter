@@ -1,29 +1,24 @@
-package com.cs446.purfect_litter.gameSessionManager;
+package com.cs446.purfect_litter.SessionManager;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import android.app.Activity;
-
-import com.cs446.purfect_litter.MainActivity;
-import com.cs446.purfect_litter.gameLogicManager.GameLogic;
-import com.cs446.purfect_litter.gameLogicManager.GameState;
-import com.cs446.purfect_litter.gameLogicManager.Player;
+import com.cs446.purfect_litter.LogicManager.Game;
+import com.cs446.purfect_litter.LogicManager.GameState;
 
 
 public class ServerManager extends GameSessionManager{
 	List<ServerCommsTask> clients = new ArrayList<ServerCommsTask>();
 	List<Integer> clientIDs = new ArrayList<Integer>(); 
 	ArrayList<String> playerNames = new ArrayList<String>();
-	MainActivity mainActivity;
-	
+	Game G;
 	Random ran = new Random();
-	GameLogic gl;	
 	ServerListenTask lt;
 	
-	public ServerManager(MainActivity mainActivity) {
-		this.mainActivity = mainActivity;
+	public ServerManager(Game g) {
+		this.G = g;
+		
 		// add server as the first 
 		lt = new ServerListenTask(this);
 	    playerNames.add("Host");
@@ -37,7 +32,7 @@ public class ServerManager extends GameSessionManager{
 		// change to if (clientIDs.size() < 3) when need to support 3 other clients
 		if (clientIDs.isEmpty() && id == -1) {
 			    int assignID = ran.nextInt(1000);
-			    clientIDs.add(new Integer(assignID));
+			    clientIDs.add(Integer.valueOf(assignID));
 			    String playername = assignID + "";
 			    playerNames.add(playername);
 			    return true;
@@ -47,8 +42,8 @@ public class ServerManager extends GameSessionManager{
 	
 	public void addClientTask(ServerCommsTask ct) {
 		clients.add(ct);
-	    gl = new GameLogic(playerNames, this);
-	    receive(gl.table);
+	    G.createLogicForServer(playerNames);
+	    receive(G.getGameState());
 	}
 	
 	public int getClientId(int pos) {
@@ -78,7 +73,7 @@ public class ServerManager extends GameSessionManager{
 	
 	@Override
 	public void receive(GameState fromClient) {
-		mainActivity.update(fromClient);
+		G.receiveGameState(fromClient);
 	}
 	
 	// send game state updates to a specific player
@@ -98,7 +93,7 @@ public class ServerManager extends GameSessionManager{
     			for (ServerCommsTask ct : clients) 
     				ct.cancel(true);
     		}
-    		
+    		// shuts down the application
 			int pid = android.os.Process.myPid();
 			android.os.Process.killProcess(pid);
 		} catch (Exception e) {
@@ -106,13 +101,6 @@ public class ServerManager extends GameSessionManager{
 		}
     }
     
-    public Player getMe() {
-    	return gl.me;
-    }
-	
-	public GameLogic getGl() {
-		return gl;
-	}
 
 }
 

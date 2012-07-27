@@ -1,4 +1,4 @@
-package com.cs446.purfect_litter.gameSessionManager;
+package com.cs446.purfect_litter.SessionManager;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -6,10 +6,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import com.cs446.purfect_litter.MainActivity;
-import com.cs446.purfect_litter.gameLogicManager.GameLogic;
-import com.cs446.purfect_litter.gameLogicManager.GameState;
-import com.cs446.purfect_litter.gameLogicManager.Player;
+import com.cs446.purfect_litter.LogicManager.Game;
+import com.cs446.purfect_litter.LogicManager.GameState;
 
 
 
@@ -18,11 +16,11 @@ public class ClientManager extends GameSessionManager {
 	ClientCommsTask ct;
 	int id = -1;
 	boolean serverStatus;
-	GameLogic gl;
-	MainActivity mainActivity;
+	Game G;
 	
-	public ClientManager(MainActivity mainActivity) {
-		this.mainActivity = mainActivity;
+	public ClientManager(Game G) {
+		this.G = G;
+		
 		try {
 			outGoingSocket = new Socket(InetAddress.getByName("10.0.2.2"), 4000);
 			this.init();
@@ -68,7 +66,7 @@ public class ClientManager extends GameSessionManager {
 
 	@Override
 	public void receive(GameState fromServer) {
-		mainActivity.update(fromServer);
+		G.receiveGameState(fromServer);
 	}
 	
 	// send an initial game state to the server to register the client
@@ -104,11 +102,8 @@ public class ClientManager extends GameSessionManager {
 		}
     }
     
-    public Player getMe() {
-    	return gl.me;
+    public Game getGame() {
+    	return this.G;
     }
-	
-	public GameLogic getGl() {
-		return gl;
-	}
+    
 }

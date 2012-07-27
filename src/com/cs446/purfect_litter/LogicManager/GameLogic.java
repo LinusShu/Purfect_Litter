@@ -1,25 +1,22 @@
-package com.cs446.purfect_litter.gameLogicManager;
+package com.cs446.purfect_litter.LogicManager;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.util.Log;
-
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDefLib;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
-import com.cs446.purfect_litter.gameLogicManager.phases.AbstractPhase;
-import com.cs446.purfect_litter.gameLogicManager.phases.StartingPhase;
-import com.cs446.purfect_litter.gameSessionManager.GameSessionManager;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardDef;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardDefLib;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
+import com.cs446.purfect_litter.LogicManager.Phases.AbstractPhase;
+import com.cs446.purfect_litter.LogicManager.Phases.StartingPhase;
 
 
 
 public class GameLogic {
 	
-	public GameState table;
-	public Player me;
-	public AbstractPhase currentPhase;
-	public GameSessionManager comm;
+	private GameState table;
+	private Player me;
+	private AbstractPhase currentPhase;
+	private Game comm;
 	
 	/**
 	 * Client Constructor
@@ -28,10 +25,11 @@ public class GameLogic {
 	 * @param playerName
 	 * @param comm
 	 */
-	public GameLogic(GameState newGS, String playerName, GameSessionManager comm)
+	public GameLogic(GameState newGS, String playerName, Game comm)
 	{
 		CardDefLib.populate();
 		this.comm = comm;
+		table = newGS;
 		
 		int i = 0;
 		while (true)
@@ -43,16 +41,15 @@ public class GameLogic {
 			}
 			i++;
 		}
-		update(newGS);
 	}
 	
-	public GameLogic(ArrayList<String> playerNames, GameSessionManager comm)//ASSUMING the CURRENT PLAYER IS FIRST
+	public GameLogic(ArrayList<String> playerNames, Game comm)//ASSUMING the CURRENT PLAYER IS FIRST
 	{
 		CardDefLib.populate();
 		this.comm = comm;
 		table = new GameState();
 		
-		table.currentPhase = GameState.phase.END;
+		table.currentPhase = GameState.phase.OOT;
 		
 		Random r= new Random();
 		
@@ -82,7 +79,7 @@ public class GameLogic {
 				{
 					for (int k=0; k<7;k++)//deal 7 of them
 					{
-						table.players.get(j).take(new CardInstance(i), Player.pile.DISCARD);
+						table.players.get(j).take(new CardInstance(i), Player.Pile.DISCARD);
 //						Log.d("GameLogic - DISCARD size: ", table.players.get(j).piles.get(Player.pile.DISCARD.index).size() + "");
 						left--;
 					}
@@ -95,7 +92,7 @@ public class GameLogic {
 				{
 					for (int k = 0; k < 3; k++)//deal 3 of them
 					{
-						table.players.get(j).take(new CardInstance(i), Player.pile.DISCARD);
+						table.players.get(j).take(new CardInstance(i), Player.Pile.DISCARD);
 						left--;
 					}
 				}
@@ -111,26 +108,26 @@ public class GameLogic {
 			table.townCards.add(newTownPile);
 		}
 		
+		//deal the cards
 		for (int i = 0;i < table.players.size(); i++)
 		{
 			for (int j = 0;j < 5; j++)
 			{
-				table.players.get(i).move(Player.pile.DECK, Player.pile.HAND);
+				table.players.get(i).move(Player.Pile.DECK, Player.Pile.HAND);
 			}
 		}
 		table.lastActions = "The game has begun!\n";
-		comm.send(table);
-		update(table);
+
 	}
 	
 	public void setPhase(AbstractPhase tothis)
 	{
 		currentPhase = tothis;
 		currentPhase.init(this);
-		comm.send(table);
+			comm.doSendGameState(table);
 	}
 	
-	void update(GameState newGS)
+	public void update(GameState newGS)
 	{
 		table = newGS;
 		
@@ -143,9 +140,29 @@ public class GameLogic {
 			table.findVictor();
 		}
 		
-		if (table.currentPlayer == me && table.currentPhase == GameState.phase.END)
+		if (table.currentPlayer == me && table.currentPhase == GameState.phase.OOT)
 		{
 			setPhase((AbstractPhase) new StartingPhase());
 		}
+	}
+	
+	public GameState getGs()
+	{
+		return table;
+	}
+	
+	public Player getMe()
+	{
+		return me;
+	}
+	
+	public AbstractPhase getPhase()
+	{
+		return currentPhase;
+	}
+	
+	public void sendGs()
+	{
+		comm.doSendGameState(table);
 	}
 }

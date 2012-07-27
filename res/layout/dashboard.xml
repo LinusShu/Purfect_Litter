@@ -57,6 +57,15 @@
         android:layout_marginRight="10dp" >
 
         <Button
+            android:id="@+id/deck_button"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="deckHandler"
+            android:text="DECK" />
+
+        <Button
             android:id="@+id/hand_button"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="0dp"
@@ -91,6 +100,7 @@
             android:layout_weight="1"
             android:onClick="chamberHandler"
             android:text="Chamber" />
+
     </LinearLayout>
 
     <Gallery

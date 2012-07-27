@@ -1,4 +1,4 @@
-package com.cs446.purfect_litter.gameSessionManager;
+package com.cs446.purfect_litter.SessionManager;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -7,7 +7,7 @@ import java.net.Socket;
 
 import android.os.AsyncTask;
 
-import com.cs446.purfect_litter.gameLogicManager.GameState;
+import com.cs446.purfect_litter.LogicManager.GameState;
 
 
 

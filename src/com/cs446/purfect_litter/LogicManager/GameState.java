@@ -1,11 +1,12 @@
-package com.cs446.purfect_litter.gameLogicManager;
+package com.cs446.purfect_litter.LogicManager;
 
 
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
+import com.cs446.purfect_litter.R;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardDef;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
 
 
 public class GameState implements Serializable{
@@ -16,10 +17,22 @@ public class GameState implements Serializable{
 	private static final long serialVersionUID = -1172399847755703701L;
 
 	public static enum phase {
-	    START("Start Phase"), ACTION("Action Phase"), CHAMBER("Chamber Phase"), PURCHASE("Purchase Phase"), END("End Phase"), VICTORY("Victory Phase");
-	    public String name;
-	    phase (String s) {
+	    START("Start Phase"), 
+	    ACTION("Action Phase"), 
+	    CHAMBER("Chamber Phase"), 
+	    PURCHASE("Purchase Phase"), 
+	    END("End Phase"), 
+	    OOT("Not My Turn"), 
+	    VICTORY("Victory Phase");
+	    
+	    private String name;
+	    
+	    private phase(String s) {
 	    	name = s;
+	    }
+	    
+	    public String getName() {
+	    	return name;
 	    }
 	}
 	
@@ -109,7 +122,7 @@ public class GameState implements Serializable{
 		{
 			if (townCards.get(i).size() == 0)
 			{
-				//rv[i]= R.drawable.card_blank;
+				rv[i]= R.drawable.card_blank;
 			}
 			else
 			{

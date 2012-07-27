@@ -1,14 +1,12 @@
-package com.cs446.purfect_litter.gameLogicManager;
+package com.cs446.purfect_litter.LogicManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-import android.util.Log;
-
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardDef;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CardInstance;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.CatCard;
-import com.cs446.purfect_litter.gameLogicManager.cardManager.LoveCard;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardDef;
+import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
+import com.cs446.purfect_litter.LogicManager.CardManager.CatCard;
+import com.cs446.purfect_litter.LogicManager.CardManager.LoveCard;
 
 
 public class Player implements Serializable {
@@ -19,10 +17,10 @@ public class Player implements Serializable {
 	private static final long serialVersionUID = -2489578786043327902L;
 	String name;
 	public ArrayList<ArrayList<CardInstance>> piles;
-	static public enum pile {
+	static public enum Pile {
 	    DECK(0), HAND(1), PLAYED(2), DISCARD(3), CHAMBER(4);
 	    public int index;
-	    pile(int in){index = in;}
+	    Pile(int in){index = in;}
 	}
 	int victoryPoints;
 	
@@ -41,30 +39,30 @@ public class Player implements Serializable {
 		return name;
 	}
 	
-	public void take(CardInstance in, pile p)
+	public void take(CardInstance in, Pile p)
 	{
 		piles.get(p.index).add(in);
 	}
 	
-	public void move(CardInstance in, pile s, pile d)
+	public void move(CardInstance in, Pile s, Pile d)
 	{
 		piles.get(d.index).add(piles.get(s.index).remove(piles.get(s.index).indexOf(in)));
 		//finds the index in s where in resides, removes it and plops it into d
 	}
 	
-	public void move(pile s, pile d)
+	public void move(Pile s, Pile d)
 	{
-		if (s == pile.DECK)//if its moving from the deck, move only one,
+		if (s == Pile.DECK)//if its moving from the deck, move only one,
 		{
-			if (piles.get(pile.DECK.index).size() == 0)//if ever deck is empty
+			if (piles.get(Pile.DECK.index).size() == 0)//if ever deck is empty
 			{
 //				Log.d("SIZE OF DISCARD ", piles.get(pile.DISCARD.index).size() + "");
 				Random r= new Random();
-				while (piles.get(pile.DISCARD.index).size()> 0)
+				while (piles.get(Pile.DISCARD.index).size()> 0)
 				{
-					int removeMe = r.nextInt(piles.get(pile.DISCARD.index).size());
-					CardInstance cardInstance = piles.get(pile.DISCARD.index).remove(removeMe);
-					piles.get(pile.DECK.index).add(cardInstance);
+					int removeMe = r.nextInt(piles.get(Pile.DISCARD.index).size());
+					CardInstance cardInstance = piles.get(Pile.DISCARD.index).remove(removeMe);
+					piles.get(Pile.DECK.index).add(cardInstance);
 					//remove a card from discard at random, and plop it into deck
 				}
 			}
@@ -81,9 +79,9 @@ public class Player implements Serializable {
 	public int getLoveInHand()
 	{
 		int rvlove= 0;
-		for (int i=0;i<piles.get(pile.HAND.index).size(); i++)
+		for (int i=0;i<piles.get(Pile.HAND.index).size(); i++)
 		{
-			CardDef look = piles.get(pile.HAND.index).get(i).getDef();
+			CardDef look = piles.get(Pile.HAND.index).get(i).getDef();
 			if (look.getType() == CardDef.ctype.LOVE)
 			{
 				LoveCard lovelook = (LoveCard) look; 
@@ -112,7 +110,7 @@ public class Player implements Serializable {
 		}
 	}
 	
-	public Integer[] getImageArray(pile p)
+	public Integer[] getImageArray(Pile p)
 	{
 		Integer[] rv= new Integer[piles.get(p.index).size()];
 		try {
