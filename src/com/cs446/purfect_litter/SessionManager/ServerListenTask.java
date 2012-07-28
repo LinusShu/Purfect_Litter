@@ -10,7 +10,9 @@ import android.os.AsyncTask;
 import com.cs446.purfect_litter.LogicManager.GameState;
 
 
-
+/**
+ * Responsible for listening to incoming client requests to join the game on the ServerSocket
+ */
 public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> {
 	private ServerManager gsm;
 	private static ServerSocket ss = null;
@@ -21,6 +23,9 @@ public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> 
 		gsm = g;
 	}
 	
+	/**
+	 * Waits for client to connect.
+	 */
 	@Override
 	protected Void doInBackground(GameSessionManager... arg0) {
 		GameState fromClient;
@@ -40,24 +45,20 @@ public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> 
 				// if there is game state update from the client
 				ObjectInputStream in = new ObjectInputStream(s.getInputStream());
 				fromClient = (GameState)in.readObject();
-				//DEBUG 
 				System.out.println ("&&& Receieved new client connection: clientID# = " + fromClient.getID() + " &&&");
 				// check to see if it's a game state from the client
 				if (gsm.addClient(fromClient.getID())) {
-					//DEBUG
 				    System.out.println("&&& Now clients are: ");
 				    for (Integer client : gsm.clientIDs) 
 					      System.out.println(client.intValue() + ", ");
-				    
-				    // create a new ServerCommsTask that listens to the connected client
+				    	
+					// create a new ServerCommsTask that listens to the connected client
 					ServerCommsTask ct = new ServerCommsTask(gsm, s, clientCount);
 					// execute the ServerCommsTask
-				    ct.execute(gsm);
+				    	ct.execute(gsm);
 					// add the ServerCommsTask to the client list, as well as start server-side GameLogic
 					gsm.addClientTask(ct);
-					
-				    
-				    clientCount ++;
+					clientCount ++;
 				}
 			} catch (IOException e) {
 					e.printStackTrace();
@@ -67,16 +68,17 @@ public class ServerListenTask extends AsyncTask<GameSessionManager, Void, Void> 
 					gsm.shutDown();
 			}
 		}
-	
-		
-	    return null;
+		return null;
 	}
 	
+	/**
+	 *  Closes both ServerSocket and the client's socket when cancelled.
+	 */
 	@Override
 	protected void onCancelled() {
 		try {
 			s.close();
-		    ss.close();
+		    	ss.close();
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.out.println("can not close sockets.");
