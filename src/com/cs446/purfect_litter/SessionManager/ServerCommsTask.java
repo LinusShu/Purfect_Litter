@@ -10,15 +10,21 @@ import android.os.AsyncTask;
 import com.cs446.purfect_litter.LogicManager.GameState;
 
 
-
+/**
+ * Responsible for communications between the server and a client.
+ */
 public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
-    ServerManager gsm;
-    Socket s;
-    ObjectOutputStream oos;
-    ObjectInputStream oin;
+    	ServerManager gsm;
+    	Socket s;
+    	ObjectOutputStream oos;
+    	ObjectInputStream oin;
 	GameState fromClient;
 	int id;
 	
+	/**
+	 *  Constructs an AsyncTask that listens on the socket associated with the client for
+	 *  imcoming GameState updates.
+	 */
 	public ServerCommsTask(ServerManager gsm, Socket in, int pos) {
 		this.gsm = gsm;
 		this.s = in;
@@ -26,13 +32,17 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 		
 		try {
 			oos = new ObjectOutputStream(s.getOutputStream());
-		    oin = new ObjectInputStream(s.getInputStream());
+		    	oin = new ObjectInputStream(s.getInputStream());
 		} catch (IOException e) {
 			e.printStackTrace();
 			System.out.println("!!! Can not get socket input/output stream !!!");
 		}
 	}
 	
+	/**
+	 *  Listens to incoming GameState updates and notifies the Game a new GameState is received
+	 *  by calling the receive() method in ServerManager
+	 */
 	@Override
 	protected Void doInBackground(GameSessionManager... arg0) {
 		System.out.println("&&& Listening to incoming game state update &&&");
@@ -62,6 +72,9 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 		
 	}
 	
+	/**
+	 *  Sends the GameState to the client
+	 */
 	public boolean send(GameState g) {
 		if (g == null) {
 			System.out.println("&&& Nothing to send &&&");
@@ -84,6 +97,9 @@ public class ServerCommsTask extends AsyncTask<GameSessionManager, Void, Void> {
 		return false;
 	}
 	
+	/**
+	 * Closes both I/O streams on the sockect
+	 */
 	@Override
 	public void onCancelled() {
 		try {
