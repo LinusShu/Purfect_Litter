@@ -16,6 +16,8 @@ import com.cs446.purfect_litter.LogicManager.Phases.StartingPhase;
 
 /**
  * GameLogic class handles the control flow of the game mechanics.
+ * Initializes the card library.
+ * Deals the cards to players.
  * Manages the players
  * Changes phases.
  * Manages and updates the game state.
