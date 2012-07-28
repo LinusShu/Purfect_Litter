@@ -23,12 +23,16 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import com.cs446.purfect_litter.LogicManager.Game;
-import com.cs446.purfect_litter.LogicManager.GameLogic;
 import com.cs446.purfect_litter.LogicManager.GameState.TownPile;
 import com.cs446.purfect_litter.LogicManager.Player;
 import com.cs446.purfect_litter.LogicManager.Player.Pile;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
 
+/**
+ * MainActivity is an Android Activity class which instantiates the application.
+ * In the architecture, it acts as the controller.
+ *
+ */
 public class MainActivity extends Activity {
 	
 	public enum SessionType {
@@ -48,14 +52,12 @@ public class MainActivity extends Activity {
 	
 	Game G;
 	
-	// should reside in model as get/set
+	// UI Components ================================================
+	
+	Screen currentScreen;
 	Pile currentPile;
 	CardInstance currentDetailCardInstance;
 	CardInstance currentPurchaseCardInstance;
-	
-	// UI ===========================================================
-	
-	Screen currentScreen;
 
 	ViewFlipper viewFlipper;
 	ProgressDialog waitForStartProgressDialog;
@@ -88,39 +90,11 @@ public class MainActivity extends Activity {
 	TextView purchaseLoveTextView;
 	TextView purchasePurchaseTextView;
 	
-	Integer[][] cards = {
-			{
-				R.drawable.card_cat1,
-				R.drawable.card_cat2,
-				R.drawable.card_cat3,
-				R.drawable.card_cat4,
-				R.drawable.card_cat5
-			},
-			{
-				R.drawable.card_cat6,
-				R.drawable.card_cat7,
-				R.drawable.card_cat8,
-				R.drawable.card_cat9,
-				R.drawable.card_cat10,
-				R.drawable.card_cat11,
-				R.drawable.card_cat12,
-				R.drawable.card_cat13
-			},
-			{
-				R.drawable.card_cat1,
-				R.drawable.card_love2,
-				R.drawable.card_love3
-			},
-			{
-				R.drawable.card_cat14,
-				R.drawable.card_cat15,
-				R.drawable.card_cat16,
-				R.drawable.card_cat17
-			}
-	};
-	
 	// ==============================================================
-
+	
+	/**
+	 * Creates the Activity.
+	 */
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,13 +102,25 @@ public class MainActivity extends Activity {
         initUIComponents();
         registerListeners();
     }
-
+    
+    @Override
+    public void onResume() {
+    	super.onResume();
+    	setScreen(currentScreen);
+    }
+    
+    /**
+     * Creates the menu.
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
     
+    /**
+     * Determines which menu items should be enabled/disabled.
+     */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
     	boolean status = G.isItMyTurn();
@@ -142,6 +128,9 @@ public class MainActivity extends Activity {
     	return true;
     }
 	
+    /**
+     * Handler for menu items.
+     */
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
     	switch (item.getItemId()) {
@@ -163,6 +152,10 @@ public class MainActivity extends Activity {
 	
 	// ==============================================================
 
+	/**
+	 * Associate variables in this class with elements in the XML layout files
+	 * to facilitate registering of controllers.
+	 */
     private void initUIComponents() {
     	currentScreen = Screen.START;
     	
@@ -179,13 +172,8 @@ public class MainActivity extends Activity {
     	gameLogTextView = (TextView) findViewById(R.id.game_log_text);
     	currentPhaseTextView = (TextView) findViewById(R.id.current_phase_text);
     	
-//    	purchaseExpandableListView = (ExpandableListView) findViewById(R.id.purchase_expandable_list_view);
     	purchaseLoveTextView = (TextView) findViewById(R.id.purchase_love_text);
     	purchasePurchaseTextView = (TextView) findViewById(R.id.purchase_purchase_text);
-    	
-//    	purchaseDetailImageView = (ImageView) findViewById(R.id.purchase_detail_image_view);
-//    	purchaseDetailBuyButton = (Button) findViewById(R.id.purchase_buy_button);
-//    	purchaseDetailBackButton = (Button) findViewById(R.id.purchase_back_button);
     	
     	purchaseLoveButton = (Button) findViewById(R.id.buy_love_button);
     	purchaseChiefButton = (Button) findViewById(R.id.buy_chief_button);
@@ -214,6 +202,10 @@ public class MainActivity extends Activity {
     	purchaseGeneralGallery = (Gallery) findViewById(R.id.purchase_general_gallery);
     }
     
+    /**
+     * Sets the screen.
+     * @param whichScreen
+     */
     private void setScreen(Screen whichScreen) {
     	switch (whichScreen) {
 		case DASHBOARD:
@@ -225,9 +217,6 @@ public class MainActivity extends Activity {
 		case PURCHASE:
 			viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.purchase_view)));
 			break;
-//		case PURCHASE_DETAIL:
-//			viewFlipper.setDisplayedChild(viewFlipper.indexOfChild(findViewById(R.id.purchase_detail_view)));
-//			break;
 		default:
 			break;
 		}
@@ -244,7 +233,18 @@ public class MainActivity extends Activity {
 		purchaseChiefGallery.setAdapter(new ImageAdapter(this, G.getTownCardPile(TownPile.CHIEF)));
 		purchaseGeneralGallery.setAdapter(new ImageAdapter(this, G.getTownCardPile(TownPile.GENERAL)));
     }
+
+    /**
+     * After clients have connected, dismiss the spinner and show the main dashboard.
+     */
+    private void startGame() {
+    	waitForStartProgressDialog.dismiss();
+    	setScreen(Screen.DASHBOARD);
+    }
     
+    /**
+     * Registers listeners on various UI components.
+     */
     private void registerListeners() {
         cardGallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -287,24 +287,32 @@ public class MainActivity extends Activity {
 			}
 		});
     }
-
-    private void startGame() {
-    	waitForStartProgressDialog.dismiss();
-    	setScreen(Screen.DASHBOARD);
-    }
 	
-	// ==============================================================
+	// BUTTON HANDLERS ==============================================
     
+    /**
+     * Handler for the "Host a Game" button on the startup screen.
+     * @param view
+     */
     public void startAsHostHandler(View view) {
     	G = new Game(this, SessionType.HOST);
     	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Waiting for other players...", true);
     }
+
     
+    /**
+     * Handler for the "Join a Game" button on the startup screen.
+     * @param view
+     */
     public void startAsClientHandler(View view) {
     	G = new Game(this, SessionType.CLIENT);
     	waitForStartProgressDialog = ProgressDialog.show(MainActivity.this, "", "Joining a game...", true);
     }
     
+    /**
+     * Handler for "Hand" button, to show the player cards in their hand.
+     * @param view
+     */
     public void handHandler(View view) {
     	if (G.isItMyTurn()) {
     		cardDetailActionButton.setEnabled(true);
@@ -355,15 +363,41 @@ public class MainActivity extends Activity {
 				Toast.LENGTH_SHORT).show();
     }
     
+    /**
+     * Handler for "Cancel" button on Card Detail screen.
+     * @param view
+     */
     public void cardDetailCancelHandler(View view) {
     	setScreen(Screen.DASHBOARD);
     }
     
+    /**
+     * Handler for "Select" button on Card Detail screen.
+     * @param view
+     */
     public void cardDetailActionHandler(View view) {
-    	G.doPickCard(currentDetailCardInstance);
+    	CardInstance playAttempt = currentDetailCardInstance;
+    	if (G.doPickCard(currentDetailCardInstance)) {
+    		Toast.makeText(getBaseContext(), 
+    				playAttempt.getDef().getName() + " played successfuly.", 
+    				Toast.LENGTH_SHORT).show();
+    	}
+    	else {
+    		Toast.makeText(getBaseContext(), 
+    				playAttempt.getDef().getName() + " could not be played. Invalid move.", 
+    				Toast.LENGTH_SHORT).show();
+    	}
+    	loveTextView.setText("Love: " + G.getGameState().currentLove);
+    	actionTextView.setText("Action: " + G.getGameState().currentAction);
+    	purchaseTextView.setText("Purchase: " + G.getGameState().currentPurchase);
+    	setGallery(cardGallery, Pile.HAND);
     	setScreen(Screen.DASHBOARD);
     }
     
+    /**
+     * Handler for "Buy" button on Purchase screen.
+     * @param view
+     */
     public void buyHandler(View view) {
     	if (currentPurchaseCardInstance == null) {
     		Toast.makeText(getBaseContext(), 
@@ -385,22 +419,12 @@ public class MainActivity extends Activity {
     				Toast.LENGTH_SHORT).show();
     	}
     }
-    
-//    public void purchaseDoneHandler(View view) {
-//    	setScreen(Screen.DASHBOARD);	// return to dashboard
-//		G.doNextPhase();
-//    }
-    
-//    public void purchaseDetailBuyHandler(View view) {
-//    	
-//    }
-    
-//    public void purchaseDetailBackHandler(View view) {
-//    	setScreen(Screen.PURCHASE);
-//    }
 	
 	// ==============================================================
     
+    /**
+     * Method that the Model calls to update the views.
+     */
     public void update() {
     	runOnUiThread(new Runnable() {
             @Override
@@ -461,10 +485,9 @@ public class MainActivity extends Activity {
     	});
     }
 	
-	// ==============================================================
 
     /****************************************************************
-     * ImageAdapter for Gallery
+     * ImageAdapter for Gallery Views
      */
     public class ImageAdapter extends BaseAdapter {
 

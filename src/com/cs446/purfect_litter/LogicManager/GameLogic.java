@@ -14,8 +14,13 @@ import com.cs446.purfect_litter.LogicManager.Phases.AbstractPhase;
 import com.cs446.purfect_litter.LogicManager.Phases.OOTPhase;
 import com.cs446.purfect_litter.LogicManager.Phases.StartingPhase;
 
-
-
+/**
+ * GameLogic class handles the control flow of the game mechanics.
+ * Manages the players
+ * Changes phases.
+ * Manages and updates the game state.
+ *
+ */
 public class GameLogic {
 	
 	private GameState table;

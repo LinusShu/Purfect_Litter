@@ -2,6 +2,7 @@ package com.cs446.purfect_litter.LogicManager;
 
 
 import java.io.Serializable;
+import java.security.PublicKey;
 import java.util.ArrayList;
 
 import android.R.integer;
@@ -11,12 +12,13 @@ import com.cs446.purfect_litter.R;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardDef;
 import com.cs446.purfect_litter.LogicManager.CardManager.CardInstance;
 
-
+/**
+ * GameState class represents the current game state.
+ * SessionManager passes GameState objects from server to clients
+ * to keep the game in sync between players.
+ */
 public class GameState extends Object implements Serializable {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -1172399847755703701L;
 
 	public static enum phase {
@@ -55,6 +57,9 @@ public class GameState extends Object implements Serializable {
 	public String lastActions;
 	public int id;
 	
+	/**
+	 * Constructor
+	 */
 	public GameState()
 	{
 		townCards = new ArrayList<ArrayList<ArrayList<CardInstance>>>();//create super container
@@ -65,6 +70,45 @@ public class GameState extends Object implements Serializable {
 		players = new ArrayList<Player>();
 		lastActions = "";
 	}
+	
+	/**
+	 * Copy constructor.
+	 */
+	public GameState(GameState other) {
+		this.id = other.id;
+		this.lastActions = new String(other.lastActions);
+		this.currentPurchase = other.currentPurchase;
+		this.currentAction = other.currentAction;
+		this.currentLove = other.currentLove;
+		this.currentPhase = other.currentPhase;
+		
+		this.players = new ArrayList<Player>();
+		for (Player otherPlayer : other.players) {
+			this.players.add(new Player(otherPlayer));
+		}
+		for (Player p : this.players) {
+			if (p.name.equals(other.currentPlayer.name)) {
+				this.currentPlayer = p;
+				break;
+			}
+		}
+		
+		this.townCards = new ArrayList<ArrayList<ArrayList<CardInstance>>>();
+		for (ArrayList<ArrayList<CardInstance>> othersTownType : other.townCards) {
+			this.townCards.add(new ArrayList<ArrayList<CardInstance>>());
+			
+			for (ArrayList<CardInstance> othersTownPile : othersTownType) {
+				int i = this.townCards.size() - 1;
+				this.townCards.get(i).add(new ArrayList<CardInstance>());
+				
+				for (CardInstance othersTownCard : othersTownPile) {
+					int j = this.townCards.get(i).size() - 1;
+					this.townCards.get(i).get(j).add(new CardInstance(othersTownCard.getDefRef()));
+				}
+			}
+		}
+	}
+	
 	/**
 	 * For use when changing turns
 	 * chooses the next player in sequence of the players array

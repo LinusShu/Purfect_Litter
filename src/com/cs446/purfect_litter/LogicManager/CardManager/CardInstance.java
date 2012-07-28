@@ -18,5 +18,9 @@ public class CardInstance implements Serializable{
 	{
 		return CardDefLib.lib.get(defRef);
 	}
+	
+	public int getDefRef() {
+		return defRef;
+	}
 
 }

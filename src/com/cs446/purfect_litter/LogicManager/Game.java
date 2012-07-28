@@ -13,6 +13,10 @@ import com.cs446.purfect_litter.SessionManager.ClientManager;
 import com.cs446.purfect_litter.SessionManager.GameSessionManager;
 import com.cs446.purfect_litter.SessionManager.ServerManager;
 
+/**
+ * Facade interface.
+ *
+ */
 public class Game {
 	
 	private MainActivity gameUI;
@@ -54,8 +58,8 @@ public class Game {
 	}
 	
 	public void doSendGameState(GameState curState) {
-		gameSessionManager.send(curState);
 		gameUI.update();
+		gameSessionManager.send(new GameState(curState));
 	}
 	
 	public void doReceiveGameState(GameState newGs) {

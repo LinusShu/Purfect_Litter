@@ -10,6 +10,7 @@
 	    android:id="@+id/mainCardDetailImageView"
 	    android:layout_width="wrap_content"
 	    android:layout_height="0dip"
+	    android:layout_gravity="center"
 	    android:layout_marginBottom="15dp"
 	    android:layout_weight="1" >
 

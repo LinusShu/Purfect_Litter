@@ -24,13 +24,36 @@ public class Player implements Serializable {
 	}
 	int victoryPoints;
 	
-	Player(String name)
+	/**
+	 * Constructor
+	 * @param name
+	 */
+	public Player(String name)
 	{
 		this.name = name;//set the name of this player
 		piles = new ArrayList<ArrayList<CardInstance>>();//create a container for piles
+		victoryPoints = 0;
 		for (int i=0; i<Pile.values().length; i++)//for every pile we want
 		{
 			piles.add(new ArrayList<CardInstance>());//make that pile
+		}
+	}
+	
+	/**
+	 * Copy constructor
+	 * @param other
+	 */
+	public Player(Player other) {
+		this.name = new String(other.name);
+		this.piles = new ArrayList<ArrayList<CardInstance>>();
+		this.victoryPoints = other.victoryPoints;
+		
+		for (ArrayList<CardInstance> othersPile : other.piles) {
+			this.piles.add(new ArrayList<CardInstance>());
+			for (CardInstance othersCard : othersPile) {
+				int defRef = othersCard.getDefRef();
+				this.piles.get(this.piles.size() - 1).add(new CardInstance(defRef));
+			}
 		}
 	}
 	
